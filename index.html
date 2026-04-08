@@ -307,6 +307,16 @@
             background: #fff; padding: 10px 16px 14px;
             box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
             z-index: 100; border-top: 1px solid #ebebeb;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        .mobile-cta-bar.visible {
+            display: block;
+            animation: slideUp 0.3s ease forwards;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
         }
         .mobile-cta-top {
             display: flex; align-items: center; justify-content: space-between;
@@ -364,16 +374,17 @@
             .summary-card .progress-section { display: none; }
             .summary-card .loyalty-box { display: none; }
 
-            /* Cart items compact */
-            .cart-item { padding: 14px; gap: 10px; flex-wrap: wrap; }
-            .cart-item-img { width: 64px; height: 64px; }
-            .cart-item-info { flex: 1; min-width: calc(100% - 80px); }
-            .cart-item-name { font-size: 13.5px; }
-            .cart-item-actions {
-                width: 100%; justify-content: flex-end; gap: 12px;
-                padding-top: 4px; border-top: 1px solid #f0f0ec; margin-top: 2px;
-            }
-            .item-total { min-width: auto; }
+            /* Cart items compact - inline layout */
+            .cart-item { padding: 12px; gap: 10px; flex-wrap: nowrap; }
+            .cart-item-img { width: 56px; height: 56px; flex-shrink: 0; }
+            .cart-item-info { flex: 1; min-width: 0; }
+            .cart-item-name { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .cart-item-price { font-size: 11.5px; }
+            .cart-item-old-price { font-size: 11px; }
+            .cart-item-discount { font-size: 10px; padding: 1px 5px; }
+            .cart-item-detail { font-size: 11px; }
+            .cart-item-actions { gap: 8px; flex-shrink: 0; }
+            .item-total { min-width: auto; font-size: 13.5px; }
 
             /* Gift module accordion */
             .gift-module { padding: 16px; }
@@ -391,8 +402,9 @@
             .summary-card { padding: 18px; }
             .summary-card .btn-checkout { display: none; }
 
-            /* Show fixed mobile CTA */
-            .mobile-cta-bar { display: block; }
+            /* Fixed mobile CTA - hidden by default, shown on scroll */
+            .mobile-cta-bar { display: none; }
+            .mobile-cta-bar.visible { display: block; }
 
             .cart-item.gift-in-cart { padding: 12px; }
 
@@ -407,13 +419,13 @@
             .logo-img { width: 40px; height: 40px; font-size: 7.5px; }
             .main-content { padding: 0 12px 140px; }
             .mobile-top-summary { margin: 0 12px 10px; }
-            .cart-item { padding: 12px 10px; gap: 10px; }
-            .cart-item-img { width: 60px; height: 60px; }
-            .cart-item-name { font-size: 12.5px; }
-            .cart-item-price { font-size: 12px; }
-            .qty-btn { width: 30px; height: 30px; font-size: 14px; }
-            .qty-value { width: 32px; height: 30px; line-height: 30px; font-size: 13px; }
-            .item-total { font-size: 14px; min-width: 50px; }
+            .cart-item { padding: 10px 8px; gap: 8px; }
+            .cart-item-img { width: 50px; height: 50px; }
+            .cart-item-name { font-size: 12px; }
+            .cart-item-price { font-size: 11px; }
+            .qty-btn { width: 28px; height: 28px; font-size: 13px; }
+            .qty-value { width: 28px; height: 28px; line-height: 28px; font-size: 12px; }
+            .item-total { font-size: 13px; min-width: 45px; }
             .page-title { font-size: 22px; padding: 6px 12px 6px; }
             .breadcrumb { padding: 12px 12px 0; }
         }
@@ -881,6 +893,36 @@ function initAccordion() {
 window.addEventListener('resize', initAccordion);
 refresh();
 setTimeout(initAccordion, 50);
+
+// Show fixed CTA when reco section enters viewport (mobile only)
+{
+    const ctaBar = document.getElementById('mobileCta');
+    const trigger = document.querySelector('.reco-section');
+    if (trigger && ctaBar) {
+        const obs = new IntersectionObserver((entries) => {
+            // Show CTA once the reco section has been seen (scrolled past top)
+            entries.forEach(e => {
+                if (window.innerWidth <= 960) {
+                    if (e.boundingClientRect.top < window.innerHeight * 0.6) {
+                        ctaBar.classList.add('visible');
+                    }
+                }
+            });
+        }, { threshold: [0, 0.3, 0.6, 1] });
+        obs.observe(trigger);
+
+        // Also listen to scroll for more reliable detection
+        let ctaShown = false;
+        window.addEventListener('scroll', () => {
+            if (ctaShown || window.innerWidth > 960) return;
+            const rect = trigger.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 0.7) {
+                ctaBar.classList.add('visible');
+                ctaShown = true;
+            }
+        }, { passive: true });
+    }
+}
 </script>
 </body>
 </html>
