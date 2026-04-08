@@ -302,17 +302,7 @@
 
         /* ── Fixed mobile CTA ── */
         .mobile-cta-bar {
-            display: none;
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: #fff; padding: 10px 16px 14px;
-            box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
-            z-index: 100; border-top: 1px solid #ebebeb;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-        }
-        .mobile-cta-bar.visible {
-            display: block;
-            animation: slideUp 0.3s ease forwards;
+            display: none !important;
         }
         @keyframes slideUp {
             from { transform: translateY(100%); }
@@ -359,6 +349,7 @@
            ════════════════════ */
         @media (max-width: 960px) {
             .main-content { flex-direction: column; padding: 0 16px 140px; }
+            .cart-left { min-width: 0; max-width: 100%; width: 100%; }
             .cart-right { width: 100%; position: static; }
             .top-banner { font-size: 10.5px; gap: 12px; padding: 8px 12px; flex-wrap: wrap; justify-content: center; }
             .header { padding: 10px 16px; }
@@ -374,17 +365,32 @@
             .summary-card .progress-section { display: none; }
             .summary-card .loyalty-box { display: none; }
 
-            /* Cart items compact - inline layout */
-            .cart-item { padding: 12px; gap: 10px; flex-wrap: nowrap; }
-            .cart-item-img { width: 56px; height: 56px; flex-shrink: 0; }
-            .cart-item-info { flex: 1; min-width: 0; }
-            .cart-item-name { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            /* Cart items compact - grid 2 rows */
+            .cart-item {
+                display: grid !important;
+                grid-template-columns: 56px 1fr;
+                grid-template-rows: auto auto;
+                gap: 8px 10px;
+                padding: 12px;
+                max-width: 100%;
+                overflow: hidden;
+            }
+            .cart-item-img { width: 56px; height: 56px; grid-row: 1; grid-column: 1; }
+            .cart-item-info { grid-row: 1; grid-column: 2; min-width: 0; overflow: hidden; }
+            .cart-item-name { font-size: 13px; }
             .cart-item-price { font-size: 11.5px; }
             .cart-item-old-price { font-size: 11px; }
             .cart-item-discount { font-size: 10px; padding: 1px 5px; }
             .cart-item-detail { font-size: 11px; }
-            .cart-item-actions { gap: 8px; flex-shrink: 0; }
-            .item-total { min-width: auto; font-size: 13.5px; }
+            .cart-item-actions {
+                grid-row: 2; grid-column: 1 / -1;
+                display: flex !important; justify-content: space-between;
+                align-items: center; gap: 8px;
+                padding-top: 8px;
+                border-top: 1px solid #f0f0ec;
+                width: 100%; max-width: 100%;
+            }
+            .item-total { font-size: 13.5px; margin-left: auto; min-width: auto; }
 
             /* Gift module accordion */
             .gift-module { padding: 16px; }
@@ -402,9 +408,16 @@
             .summary-card { padding: 18px; }
             .summary-card .btn-checkout { display: none; }
 
-            /* Fixed mobile CTA - hidden by default, shown on scroll */
-            .mobile-cta-bar { display: none; }
-            .mobile-cta-bar.visible { display: block; }
+            /* Fixed mobile CTA - only visible on mobile after scroll trigger */
+            .mobile-cta-bar { display: none !important; }
+            .mobile-cta-bar.visible {
+                display: block !important;
+                position: fixed; bottom: 0; left: 0; right: 0;
+                background: #fff; padding: 10px 16px 14px;
+                box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+                z-index: 100; border-top: 1px solid #ebebeb;
+                animation: slideUp 0.3s ease forwards;
+            }
 
             .cart-item.gift-in-cart { padding: 12px; }
 
@@ -419,13 +432,13 @@
             .logo-img { width: 40px; height: 40px; font-size: 7.5px; }
             .main-content { padding: 0 12px 140px; }
             .mobile-top-summary { margin: 0 12px 10px; }
-            .cart-item { padding: 10px 8px; gap: 8px; }
+            .cart-item { padding: 10px; gap: 6px; }
             .cart-item-img { width: 50px; height: 50px; }
             .cart-item-name { font-size: 12px; }
-            .cart-item-price { font-size: 11px; }
+            .cart-item-price { font-size: 10.5px; }
             .qty-btn { width: 28px; height: 28px; font-size: 13px; }
             .qty-value { width: 28px; height: 28px; line-height: 28px; font-size: 12px; }
-            .item-total { font-size: 13px; min-width: 45px; }
+            .item-total { font-size: 13px; }
             .page-title { font-size: 22px; padding: 6px 12px 6px; }
             .breadcrumb { padding: 12px 12px 0; }
         }
