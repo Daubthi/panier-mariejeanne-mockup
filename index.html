@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panier - Marie Jeanne CBD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f0; color: #1a1a1a;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Top Banner ── */
+        .top-banner {
+            background: #ffe600; padding: 10px 20px;
+            display: flex; justify-content: center; align-items: center;
+            gap: 50px; font-size: 12.5px; font-weight: 600; letter-spacing: -0.01em;
+        }
+        .top-banner span { white-space: nowrap; }
+
+        /* ── Header ── */
+        .header {
+            background: #fff; padding: 14px 32px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid #ebebeb;
+        }
+        .header-left { display: flex; align-items: center; gap: 16px; }
+        .menu-btn {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 14px; font-weight: 600; cursor: pointer;
+            background: none; border: none; font-family: inherit;
+        }
+        .menu-btn svg { width: 20px; height: 20px; }
+        .search-bar {
+            display: flex; align-items: center;
+            background: #f5f5f2; border-radius: 24px;
+            padding: 9px 16px; gap: 8px; width: 200px;
+        }
+        .search-bar input { border: none; background: none; outline: none; font-size: 13px; width: 100%; font-family: inherit; }
+        .logo-img {
+            width: 48px; height: 48px; background: #1a1a1a;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; color: #fff; font-size: 8.5px;
+            font-weight: 800; line-height: 1.1; text-align: center;
+        }
+        .header-right { display: flex; align-items: center; gap: 14px; }
+        .btn-pro {
+            border: 1.5px solid #1a1a1a; border-radius: 24px;
+            padding: 8px 18px; font-size: 12.5px; font-weight: 600;
+            background: none; cursor: pointer; font-family: inherit;
+        }
+        .header-icon { width: 22px; height: 22px; cursor: pointer; }
+        .cart-icon-wrapper { position: relative; }
+        .cart-badge {
+            position: absolute; top: -5px; right: -5px;
+            background: #ffe600; color: #1a1a1a;
+            font-size: 10px; font-weight: 700;
+            width: 17px; height: 17px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* ── Breadcrumb + Title ── */
+        .breadcrumb { padding: 20px 40px 0; font-size: 13px; color: #999; }
+        .page-title { padding: 8px 40px 24px; font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
+
+        /* ── Layout ── */
+        .main-content {
+            display: flex; gap: 28px; padding: 0 40px 60px;
+            max-width: 1260px; margin: 0 auto; align-items: flex-start;
+        }
+        .cart-left { flex: 1; min-width: 0; }
+        .cart-right { width: 360px; flex-shrink: 0; position: sticky; top: 20px; }
+
+        /* ── Cart Item ── */
+        .cart-item {
+            background: #fff; border-radius: 10px;
+            padding: 18px 20px; display: flex; gap: 16px;
+            align-items: center; margin-bottom: 10px;
+        }
+        .cart-item-img {
+            width: 90px; height: 90px; border-radius: 8px;
+            background: #f5f3ee; display: flex; align-items: center;
+            justify-content: center; flex-shrink: 0;
+        }
+        .cart-item-info { flex: 1; min-width: 0; }
+        .cart-item-name { font-weight: 700; font-size: 14.5px; margin-bottom: 3px; }
+        .cart-item-price { font-size: 13px; color: #666; margin-bottom: 3px; }
+        .cart-item-old-price { text-decoration: line-through; color: #aaa; font-size: 12.5px; margin-right: 6px; }
+        .cart-item-discount {
+            background: #c6f560; color: #1a1a1a;
+            font-size: 11px; font-weight: 700;
+            padding: 2px 7px; border-radius: 4px; display: inline-block;
+        }
+        .cart-item-detail { font-size: 12.5px; color: #999; margin-top: 2px; }
+        .cart-item-actions { display: flex; align-items: center; gap: 14px; }
+        .qty-control {
+            display: flex; align-items: center;
+            border: 1.5px solid #e5e5e5; border-radius: 8px; overflow: hidden;
+        }
+        .qty-btn {
+            width: 34px; height: 34px; border: none; background: #fff;
+            font-size: 16px; cursor: pointer; display: flex;
+            align-items: center; justify-content: center; color: #666; font-family: inherit;
+        }
+        .qty-btn:hover { background: #fafaf7; }
+        .qty-value {
+            width: 36px; text-align: center; font-weight: 600; font-size: 14px;
+            border-left: 1.5px solid #e5e5e5; border-right: 1.5px solid #e5e5e5;
+            height: 34px; line-height: 34px;
+        }
+        .item-total { font-weight: 700; font-size: 15px; min-width: 65px; text-align: right; }
+        .delete-btn { background: none; border: none; cursor: pointer; color: #ccc; padding: 6px; }
+        .delete-btn:hover { color: #e74c3c; }
+
+        /* ── Gift in cart ── */
+        .cart-item.gift-in-cart { border: 2px dashed #ffe600; background: #fffef5; }
+        .gift-badge-inline {
+            display: inline-flex; align-items: center; gap: 3px;
+            background: #ffe600; font-size: 10px; font-weight: 700;
+            padding: 2px 7px; border-radius: 4px; margin-left: 6px; vertical-align: middle;
+        }
+
+        /* ══════════════════════
+           GIFT MODULE
+           ══════════════════════ */
+        .gift-module {
+            background: #fff; border-radius: 10px;
+            padding: 24px; margin-top: 6px;
+            border: 2px solid #f0f0ec; transition: border-color 0.3s;
+        }
+        .gift-module.active { border-color: #ffe600; }
+
+        .gift-module-header {
+            display: flex; align-items: center; gap: 10px;
+            cursor: default;
+        }
+        .gift-module-header h3 { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
+        .gift-tag {
+            margin-left: auto; font-size: 10.5px; font-weight: 700;
+            padding: 3px 10px; border-radius: 20px;
+            background: #ffe600; color: #1a1a1a;
+        }
+        /* Chevron for mobile accordion */
+        .gift-chevron {
+            display: none; margin-left: 8px; transition: transform 0.3s;
+            width: 20px; height: 20px; flex-shrink: 0;
+        }
+        .gift-chevron.open { transform: rotate(180deg); }
+
+        .gift-module-sub { font-size: 13px; color: #888; margin-bottom: 18px; margin-top: 4px; }
+        .gift-body { /* wrapper for accordion content on mobile */ }
+
+        .gift-locked-msg {
+            text-align: center; padding: 24px 16px; color: #999; font-size: 14px;
+        }
+        .gift-locked-msg .lock-icon { font-size: 28px; display: block; margin-bottom: 6px; }
+        .gift-locked-msg strong { color: #1a1a1a; }
+
+        .gift-tier-label {
+            font-size: 12.5px; font-weight: 600; color: #888;
+            margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+        }
+        .tier-badge { padding: 2px 8px; border-radius: 4px; font-size: 10.5px; font-weight: 700; }
+        .tier-badge.t1 { background: #ffe600; color: #1a1a1a; }
+        .tier-badge.t2 { background: #1a1a1a; color: #ffe600; }
+
+        .gift-products { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+
+        .gift-product-card {
+            border: 2px solid #f0f0ec; border-radius: 10px;
+            padding: 14px 10px; cursor: pointer; transition: all 0.15s;
+            position: relative; text-align: center; background: #fff;
+        }
+        .gift-product-card:hover { border-color: #d0d0c8; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .gift-product-card.selected { border-color: #1a1a1a; background: #fafaf5; }
+        .gift-product-card.selected::after {
+            content: '✓'; position: absolute; top: 7px; right: 7px;
+            background: #1a1a1a; color: #fff;
+            width: 20px; height: 20px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 700;
+        }
+        .gift-product-img {
+            width: 56px; height: 56px; margin: 0 auto 8px;
+            background: #f5f3ee; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; font-size: 26px;
+        }
+        .gift-product-name { font-size: 11.5px; font-weight: 600; line-height: 1.3; margin-bottom: 3px; }
+        .gift-product-value { font-size: 10.5px; color: #aaa; }
+        .gift-product-value s { color: #e74c3c; }
+
+        .gift-tier-section { margin-top: 18px; padding-top: 18px; border-top: 1px solid #f0f0ec; }
+        .gift-tier-section:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+        .gift-tier-section.locked { opacity: 0.35; pointer-events: none; }
+
+        .gift-selected-banner {
+            display: none; background: #f0fce8; border-radius: 8px;
+            padding: 10px 14px; font-size: 13px; margin-top: 14px;
+            align-items: center; gap: 8px;
+        }
+        .gift-selected-banner.visible { display: flex; }
+        .gift-selected-banner .change-link {
+            margin-left: auto; color: #666; font-size: 12px;
+            text-decoration: underline; cursor: pointer;
+        }
+
+        /* ── Summary Card ── */
+        .summary-card { background: #fff; border-radius: 10px; padding: 22px; }
+        .summary-line { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
+        .summary-line.total {
+            font-weight: 700; font-size: 16px;
+            margin-top: 12px; padding-top: 12px; border-top: 1px solid #ebebeb;
+        }
+
+        /* ── Progress Bar ── */
+        .progress-section { margin: 18px 0 6px; }
+        .progress-track {
+            height: 7px; background: #ebebeb; border-radius: 7px;
+            position: relative; overflow: visible;
+        }
+        .progress-fill {
+            height: 100%; border-radius: 7px;
+            transition: width 0.5s ease; position: absolute; top: 0; left: 0;
+        }
+        .milestone-markers { position: absolute; top: 0; left: 0; right: 0; height: 100%; }
+        .milestone-marker {
+            position: absolute; top: 50%; transform: translate(-50%, -50%);
+            width: 19px; height: 19px; border-radius: 50%;
+            background: #fff; border: 2.5px solid #ddd; z-index: 2;
+            transition: all 0.3s; display: flex; align-items: center;
+            justify-content: center; font-size: 9px;
+        }
+        .milestone-marker.reached { border-color: #1a1a1a; background: #ffe600; }
+        .milestone-marker .m-icon { display: none; }
+        .milestone-marker.reached .m-icon { display: block; font-size: 9px; }
+        .milestone-labels { display: flex; position: relative; height: 38px; margin-top: 10px; }
+        .milestone-label {
+            position: absolute; transform: translateX(-50%);
+            text-align: center; font-size: 10px; color: #bbb;
+            white-space: nowrap; transition: color 0.3s; line-height: 1.3;
+        }
+        .milestone-label.reached { color: #1a1a1a; font-weight: 600; }
+        .milestone-label .l-icon { font-size: 13px; }
+        .progress-message {
+            text-align: center; font-size: 12.5px;
+            margin-top: 6px; padding: 8px 12px;
+            border-radius: 6px; background: #fafaf5; line-height: 1.5;
+        }
+        .progress-message .hl { color: #d35400; font-weight: 700; }
+
+        /* ── Loyalty ── */
+        .loyalty-box {
+            display: flex; align-items: center; gap: 10px;
+            background: #f0f4ff; border-radius: 8px;
+            padding: 12px; margin: 14px 0; font-size: 12.5px;
+        }
+        .loyalty-box strong { color: #3366ff; }
+
+        /* ── CTA ── */
+        .btn-checkout {
+            width: 100%; padding: 14px; background: #1a1a1a;
+            color: #fff; border: none; border-radius: 8px;
+            font-size: 15px; font-weight: 700; cursor: pointer;
+            font-family: inherit; transition: background 0.15s;
+        }
+        .btn-checkout:hover { background: #333; }
+
+        /* ── Fixed mobile CTA ── */
+        .mobile-cta-bar {
+            display: none; /* hidden on desktop */
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: #fff; padding: 12px 16px;
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+            z-index: 100;
+            border-top: 1px solid #ebebeb;
+        }
+        .mobile-cta-bar .mobile-cta-row {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .mobile-cta-bar .mobile-total-label { font-size: 14px; color: #666; }
+        .mobile-cta-bar .mobile-total-price { font-size: 18px; font-weight: 800; }
+        .mobile-cta-bar .btn-checkout { padding: 14px; font-size: 15px; }
+
+        /* ── Promo ── */
+        .promo-section { margin-top: 14px; }
+        .promo-label { font-size: 13px; font-weight: 600; margin-bottom: 7px; }
+        .promo-input-group { display: flex; gap: 7px; }
+        .promo-input {
+            flex: 1; padding: 10px 12px; border: 1.5px solid #e5e5e5;
+            border-radius: 7px; font-size: 13px; outline: none; font-family: inherit;
+        }
+        .promo-input:focus { border-color: #1a1a1a; }
+        .btn-promo {
+            padding: 10px 16px; border: 1.5px solid #1a1a1a;
+            background: #fff; border-radius: 7px; font-weight: 600;
+            font-size: 13px; cursor: pointer; font-family: inherit;
+        }
+
+        /* ── Trust ── */
+        .trust-badges {
+            display: flex; justify-content: center; gap: 24px;
+            margin-top: 16px; padding-top: 14px; border-top: 1px solid #ebebeb;
+        }
+        .trust-badge { text-align: center; font-size: 10.5px; color: #999; line-height: 1.3; }
+        .trust-badge .badge-icon { font-size: 20px; margin-bottom: 3px; display: block; }
+
+        /* ════════════════════════════════
+           MOBILE RESPONSIVE
+           ════════════════════════════════ */
+        @media (max-width: 960px) {
+            .main-content { flex-direction: column; padding: 0 16px 130px; }
+            .cart-right { width: 100%; position: static; }
+            .top-banner { font-size: 10.5px; gap: 12px; padding: 8px 12px; flex-wrap: wrap; justify-content: center; }
+            .header { padding: 10px 16px; }
+            .search-bar { display: none; }
+            .btn-pro { display: none; }
+            .page-title { padding: 8px 16px 16px; font-size: 24px; }
+            .breadcrumb { padding: 14px 16px 0; }
+
+            /* Cart items compact - stack actions below info */
+            .cart-item {
+                padding: 14px; gap: 10px;
+                flex-wrap: wrap;
+            }
+            .cart-item-img { width: 64px; height: 64px; }
+            .cart-item-info { flex: 1; min-width: calc(100% - 80px); }
+            .cart-item-name { font-size: 13.5px; }
+            .cart-item-actions {
+                width: 100%; justify-content: flex-end; gap: 12px;
+                padding-top: 4px; border-top: 1px solid #f0f0ec; margin-top: 2px;
+            }
+            .item-total { min-width: auto; }
+
+            /* Gift module accordion */
+            .gift-module { padding: 16px; }
+            .gift-module-header { cursor: pointer; }
+            .gift-chevron { display: block; }
+            .gift-body { overflow: hidden; transition: max-height 0.35s ease, opacity 0.25s ease; }
+            .gift-body.collapsed { max-height: 0 !important; opacity: 0; overflow: hidden; }
+            .gift-body.expanded { opacity: 1; }
+            .gift-products { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .gift-product-card { padding: 12px 8px; }
+            .gift-product-img { width: 48px; height: 48px; font-size: 22px; }
+            .gift-product-name { font-size: 11px; }
+
+            /* Summary compact */
+            .summary-card { padding: 18px; }
+            /* Hide desktop checkout on mobile */
+            .summary-card .btn-checkout { display: none; }
+
+            /* Show fixed mobile CTA */
+            .mobile-cta-bar { display: block; }
+
+            /* Gift in cart compact */
+            .cart-item.gift-in-cart { padding: 12px; }
+        }
+
+        @media (max-width: 420px) {
+            .top-banner { gap: 8px; font-size: 9.5px; }
+            .header { padding: 8px 12px; }
+            .logo-img { width: 40px; height: 40px; font-size: 7.5px; }
+            .main-content { padding: 0 12px 100px; }
+            .cart-item { padding: 12px 10px; gap: 10px; }
+            .cart-item-img { width: 60px; height: 60px; }
+            .cart-item-name { font-size: 12.5px; }
+            .cart-item-price { font-size: 12px; }
+            .qty-btn { width: 30px; height: 30px; font-size: 14px; }
+            .qty-value { width: 32px; height: 30px; line-height: 30px; font-size: 13px; }
+            .item-total { font-size: 14px; min-width: 50px; }
+            .page-title { font-size: 22px; padding: 6px 12px 14px; }
+            .breadcrumb { padding: 12px 12px 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Top Banner -->
+<div class="top-banner">
+    <span>Expe tardive jusqu'a 18H !</span>
+    <span>Programme fidelite 10&#8364; = 1&#8364;</span>
+    <span>Livraison gratuite a partir de 39,90&#8364;</span>
+    <span>&#11088; 4.71/5 (2890)</span>
+</div>
+
+<!-- Header -->
+<div class="header">
+    <div class="header-left">
+        <button class="menu-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            Menu
+        </button>
+        <div class="search-bar">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Rechercher...">
+        </div>
+    </div>
+    <div class="logo-img">MARIE<br>JEANNE</div>
+    <div class="header-right">
+        <button class="btn-pro">Espace pro</button>
+        <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <div class="cart-icon-wrapper">
+            <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+            <span class="cart-badge" id="cartBadge">6</span>
+        </div>
+    </div>
+</div>
+
+<div class="breadcrumb">Accueil</div>
+<h1 class="page-title">Panier</h1>
+
+<div class="main-content">
+    <!-- LEFT -->
+    <div class="cart-left">
+        <div class="cart-item" id="cartItem0">
+            <div class="cart-item-img"><div style="font-size:36px">🫧</div></div>
+            <div class="cart-item-info">
+                <div class="cart-item-name">Huile CBD Cerise</div>
+                <div class="cart-item-price">Unit price : 9,03 &#8364;</div>
+                <div><span class="cart-item-old-price">12,90 &#8364;</span><span class="cart-item-discount">-30%</span></div>
+                <div class="cart-item-detail">Concentration CBD : 10%</div>
+            </div>
+            <div class="cart-item-actions">
+                <div class="qty-control">
+                    <button class="qty-btn" onclick="updateQty(0,-1)">&#8722;</button>
+                    <div class="qty-value" id="qty-0">1</div>
+                    <button class="qty-btn" onclick="updateQty(0,1)">+</button>
+                </div>
+                <div class="item-total" id="total-0">9,03 &#8364;</div>
+                <button class="delete-btn" onclick="removeItem(0)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+            </div>
+        </div>
+
+        <div class="cart-item" id="cartItem1">
+            <div class="cart-item-img"><div style="font-size:36px">🌿</div></div>
+            <div class="cart-item-info">
+                <div class="cart-item-name">Amnesia Haze - Fleur CBD</div>
+                <div class="cart-item-price">Unit price : 8,90 &#8364;</div>
+                <div class="cart-item-detail">CBD Indoor Premium - 5g</div>
+            </div>
+            <div class="cart-item-actions">
+                <div class="qty-control">
+                    <button class="qty-btn" onclick="updateQty(1,-1)">&#8722;</button>
+                    <div class="qty-value" id="qty-1">5</div>
+                    <button class="qty-btn" onclick="updateQty(1,1)">+</button>
+                </div>
+                <div class="item-total" id="total-1">44,50 &#8364;</div>
+                <button class="delete-btn" onclick="removeItem(1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+            </div>
+        </div>
+
+        <!-- Gift in cart -->
+        <div class="cart-item gift-in-cart" id="giftCartItem" style="display:none">
+            <div class="cart-item-img" style="background:#fff9db"><div style="font-size:36px" id="giftCartIcon">🎁</div></div>
+            <div class="cart-item-info">
+                <div class="cart-item-name"><span id="giftCartName">Cadeau</span><span class="gift-badge-inline">CADEAU</span></div>
+                <div class="cart-item-price" style="color:#27ae60;font-weight:600">GRATUIT</div>
+            </div>
+            <div class="cart-item-actions">
+                <div class="item-total" style="color:#27ae60">0,00 &#8364;</div>
+                <button class="delete-btn" onclick="deselectGift()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+        </div>
+
+        <!-- GIFT MODULE -->
+        <div class="gift-module" id="giftModule">
+            <div class="gift-module-header" onclick="toggleGiftAccordion()">
+                <span style="font-size:22px">🎁</span>
+                <h3>Choisissez votre cadeau</h3>
+                <span class="gift-tag" id="giftTag">OFFERT</span>
+                <svg class="gift-chevron" id="giftChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+
+            <div class="gift-body" id="giftBody">
+                <div class="gift-module-sub" id="giftModuleSub">Selectionnez 1 produit offert parmi notre selection</div>
+
+                <div class="gift-locked-msg" id="giftLockedMsg" style="display:none">
+                    <span class="lock-icon">🔒</span>
+                    Ajoutez <strong id="giftRemainingAmount">0 &#8364;</strong> pour debloquer votre cadeau !
+                </div>
+
+                <!-- Tier 1 -->
+                <div id="giftTier1" class="gift-tier-section" style="display:none">
+                    <div class="gift-tier-label">Palier 50&#8364; <span class="tier-badge t1">1 cadeau au choix</span></div>
+                    <div class="gift-products">
+                        <div class="gift-product-card" onclick="selectGift(this,1,'Bonbons CBD Fruits','🍬')">
+                            <div class="gift-product-img">🍬</div>
+                            <div class="gift-product-name">Bonbons CBD Fruits Rouges</div>
+                            <div class="gift-product-value">Valeur <s>4,90&#8364;</s></div>
+                        </div>
+                        <div class="gift-product-card" onclick="selectGift(this,1,'Infusion CBD Nuit','🍵')">
+                            <div class="gift-product-img">🍵</div>
+                            <div class="gift-product-name">Infusion CBD Nuit Paisible</div>
+                            <div class="gift-product-value">Valeur <s>5,90&#8364;</s></div>
+                        </div>
+                        <div class="gift-product-card" onclick="selectGift(this,1,'Sample Huile CBD 5%','💧')">
+                            <div class="gift-product-img">💧</div>
+                            <div class="gift-product-name">Sample Huile CBD 5%</div>
+                            <div class="gift-product-value">Valeur <s>3,90&#8364;</s></div>
+                        </div>
+                        <div class="gift-product-card" onclick="selectGift(this,1,'Grinder Marie Jeanne','⚙️')">
+                            <div class="gift-product-img">⚙️</div>
+                            <div class="gift-product-name">Grinder Marie Jeanne</div>
+                            <div class="gift-product-value">Valeur <s>6,90&#8364;</s></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tier 2 -->
+                <div id="giftTier2" class="gift-tier-section" style="display:none">
+                    <div class="gift-tier-label">Palier 100&#8364; <span class="tier-badge t2">PREMIUM</span></div>
+                    <div class="gift-products">
+                        <div class="gift-product-card" onclick="selectGift(this,2,'E-liquide Gelato 10ml','🫧')">
+                            <div class="gift-product-img">🫧</div>
+                            <div class="gift-product-name">E-liquide Gelato 10ml</div>
+                            <div class="gift-product-value">Valeur <s>12,90&#8364;</s></div>
+                        </div>
+                        <div class="gift-product-card" onclick="selectGift(this,2,'Huile CBD 10% Full Spectrum','🌟')">
+                            <div class="gift-product-img">🌟</div>
+                            <div class="gift-product-name">Huile CBD 10% Full Spectrum</div>
+                            <div class="gift-product-value">Valeur <s>19,90&#8364;</s></div>
+                        </div>
+                        <div class="gift-product-card" onclick="selectGift(this,2,'Pack Decouverte Fleurs','🌿')">
+                            <div class="gift-product-img">🌿</div>
+                            <div class="gift-product-name">Pack Decouverte Fleurs 3x1g</div>
+                            <div class="gift-product-value">Valeur <s>14,90&#8364;</s></div>
+                        </div>
+                        <div class="gift-product-card" onclick="selectGift(this,2,'Vaporisateur Pocket','💨')">
+                            <div class="gift-product-img">💨</div>
+                            <div class="gift-product-name">Vaporisateur Pocket</div>
+                            <div class="gift-product-value">Valeur <s>24,90&#8364;</s></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gift-selected-banner" id="giftSelectedBanner">
+                    <span>✅</span>
+                    <span><strong id="selectedGiftName">-</strong> ajoute a votre commande !</span>
+                    <span class="change-link" onclick="deselectGift()">Changer</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="cart-right">
+        <div class="summary-card">
+            <div class="summary-line">
+                <span id="articleCount">6 articles</span>
+                <span id="subtotalPrice">53,53 &#8364;</span>
+            </div>
+            <div class="summary-line">
+                <span>Livraison</span>
+                <span id="shippingPrice">4,90 &#8364;</span>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-track">
+                    <div class="progress-fill" id="progressFill"></div>
+                    <div class="milestone-markers">
+                        <div class="milestone-marker" id="marker-shipping" style="left:33%"><span class="m-icon">✓</span></div>
+                        <div class="milestone-marker" id="marker-gift1" style="left:60%"><span class="m-icon">🎁</span></div>
+                        <div class="milestone-marker" id="marker-gift2" style="left:100%"><span class="m-icon">🎁</span></div>
+                    </div>
+                </div>
+                <div class="milestone-labels">
+                    <div class="milestone-label" id="label-shipping" style="left:33%"><span class="l-icon">🚚</span> 39,90&#8364;</div>
+                    <div class="milestone-label" id="label-gift1" style="left:60%"><span class="l-icon">🎁</span> 50&#8364;</div>
+                    <div class="milestone-label" id="label-gift2" style="left:100%"><span class="l-icon">🎁</span> 100&#8364;</div>
+                </div>
+                <div class="progress-message" id="progressMessage"></div>
+            </div>
+
+            <div class="summary-line total">
+                <span>Total TTC</span>
+                <span id="totalPrice">53,53 &#8364;</span>
+            </div>
+
+            <div class="loyalty-box">
+                <span style="font-size:20px">🏠</span>
+                <div><strong>Fidelite : 0,54 &#8364;</strong> ajoutes a votre cagnotte</div>
+            </div>
+
+            <button class="btn-checkout">Commander</button>
+
+            <div class="promo-section">
+                <div class="promo-label">Vous avez un code promo ?</div>
+                <div class="promo-input-group">
+                    <input class="promo-input" type="text" placeholder="Code promo">
+                    <button class="btn-promo">Ajouter</button>
+                </div>
+            </div>
+
+            <div class="trust-badges">
+                <div class="trust-badge"><span class="badge-icon">🔒</span>Paiement<br>securise</div>
+                <div class="trust-badge"><span class="badge-icon">📦</span>Colis<br>anonymise</div>
+                <div class="trust-badge"><span class="badge-icon">⚡</span>Livraison<br>24/48h</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Fixed mobile CTA -->
+<div class="mobile-cta-bar" id="mobileCta">
+    <div class="mobile-cta-row">
+        <span class="mobile-total-label">Total TTC</span>
+        <span class="mobile-total-price" id="mobileTotalPrice">53,53 &#8364;</span>
+    </div>
+    <button class="btn-checkout">Commander</button>
+</div>
+
+<script>
+const items = [
+    { name:'Huile CBD Cerise', unitPrice:9.03, qty:1 },
+    { name:'Amnesia Haze - Fleur CBD', unitPrice:8.90, qty:5 }
+];
+const SHIPPING_THRESHOLD = 39.90, GIFT_T1 = 50, GIFT_T2 = 100, SHIPPING_COST = 4.90;
+let selectedGift = null, selectedGiftTier = null;
+let giftAccordionOpen = true;
+
+function fmt(v) { return v.toFixed(2).replace('.',',') + ' \u20AC'; }
+function sub() { return items.reduce((s,i) => s + i.unitPrice * i.qty, 0); }
+function tQty() { return items.reduce((s,i) => s + i.qty, 0); }
+
+function updateQty(i, d) {
+    items[i].qty = Math.max(0, items[i].qty + d);
+    if (items[i].qty === 0) { removeItem(i); return; }
+    document.getElementById('qty-'+i).textContent = items[i].qty;
+    document.getElementById('total-'+i).textContent = fmt(items[i].unitPrice * items[i].qty);
+    refresh();
+}
+function removeItem(i) {
+    items[i].qty = 0;
+    document.getElementById('cartItem'+i).style.display = 'none';
+    refresh();
+}
+
+function refresh() {
+    const s = sub(), free = s >= SHIPPING_THRESHOLD, ship = free ? 0 : SHIPPING_COST, tot = s + ship;
+
+    document.getElementById('articleCount').textContent = tQty() + ' article' + (tQty()>1?'s':'');
+    document.getElementById('subtotalPrice').textContent = fmt(s);
+    const sp = document.getElementById('shippingPrice');
+    sp.textContent = free ? 'GRATUIT' : fmt(ship);
+    sp.style.color = free ? '#27ae60' : '';
+    sp.style.fontWeight = free ? '700' : '';
+    document.getElementById('totalPrice').textContent = fmt(tot);
+    document.getElementById('mobileTotalPrice').textContent = fmt(tot);
+    document.getElementById('cartBadge').textContent = tQty() + (selectedGift ? 1 : 0);
+
+    // Progress - map to visual positions (33%, 60%, 100%)
+    let pct = 0;
+    if (s <= SHIPPING_THRESHOLD) pct = (s / SHIPPING_THRESHOLD) * 33;
+    else if (s <= GIFT_T1) pct = 33 + ((s - SHIPPING_THRESHOLD) / (GIFT_T1 - SHIPPING_THRESHOLD)) * 27;
+    else if (s <= GIFT_T2) pct = 60 + ((s - GIFT_T1) / (GIFT_T2 - GIFT_T1)) * 40;
+    else pct = 100;
+
+    const pf = document.getElementById('progressFill');
+    pf.style.width = pct + '%';
+    if (s >= GIFT_T2) pf.style.background = 'linear-gradient(90deg,#ffe600,#ff9500,#ff5722)';
+    else if (s >= GIFT_T1) pf.style.background = 'linear-gradient(90deg,#ffe600,#ff9500)';
+    else if (s >= SHIPPING_THRESHOLD) pf.style.background = 'linear-gradient(90deg,#ffe600,#ffc800)';
+    else pf.style.background = 'linear-gradient(90deg,#e0e0d8,#ffe600)';
+
+    setM('shipping', s >= SHIPPING_THRESHOLD);
+    setM('gift1', s >= GIFT_T1);
+    setM('gift2', s >= GIFT_T2);
+
+    const msg = document.getElementById('progressMessage');
+    if (s < SHIPPING_THRESHOLD) msg.innerHTML = 'Plus que <span class="hl">'+fmt(SHIPPING_THRESHOLD-s)+'</span> pour la <strong>livraison offerte</strong> 🚚';
+    else if (s < GIFT_T1) msg.innerHTML = '🚚 Livraison offerte ! Plus que <span class="hl">'+fmt(GIFT_T1-s)+'</span> pour votre <strong>cadeau</strong> 🎁';
+    else if (s < GIFT_T2) msg.innerHTML = '🎁 Cadeau debloque ! Plus que <span class="hl">'+fmt(GIFT_T2-s)+'</span> pour le <strong>cadeau Premium</strong> 🌟';
+    else msg.innerHTML = '🌟 <strong>Tous les avantages debloques !</strong> 🚚 🎁';
+
+    updateGift(s);
+}
+
+function setM(id, on) {
+    document.getElementById('marker-'+id).classList.toggle('reached', on);
+    document.getElementById('label-'+id).classList.toggle('reached', on);
+}
+
+function updateGift(s) {
+    const mod = document.getElementById('giftModule');
+    const locked = document.getElementById('giftLockedMsg');
+    const t1 = document.getElementById('giftTier1'), t2 = document.getElementById('giftTier2');
+    const modSub = document.getElementById('giftModuleSub');
+
+    if (s < GIFT_T1) {
+        mod.classList.remove('active');
+        locked.style.display = 'block'; t1.style.display = 'none'; t2.style.display = 'none';
+        modSub.style.display = 'none';
+        document.getElementById('giftRemainingAmount').textContent = fmt(GIFT_T1 - s);
+        document.getElementById('giftTag').textContent = 'DES 50\u20AC';
+        document.getElementById('giftTag').style.background = '#ebebeb';
+        document.getElementById('giftTag').style.color = '#999';
+        if (selectedGift) deselectGift();
+    } else {
+        mod.classList.add('active');
+        locked.style.display = 'none'; modSub.style.display = 'block';
+        document.getElementById('giftTag').textContent = 'OFFERT';
+        document.getElementById('giftTag').style.background = '#ffe600';
+        document.getElementById('giftTag').style.color = '#1a1a1a';
+        t1.style.display = 'block'; t1.classList.remove('locked');
+        if (s >= GIFT_T2) { t2.style.display = 'block'; t2.classList.remove('locked'); }
+        else { t2.style.display = 'block'; t2.classList.add('locked'); if (selectedGiftTier===2) deselectGift(); }
+    }
+}
+
+function selectGift(card, tier, name, icon) {
+    document.querySelectorAll('.gift-product-card.selected').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedGift = name; selectedGiftTier = tier;
+    document.getElementById('giftCartItem').style.display = 'flex';
+    document.getElementById('giftCartName').textContent = name;
+    document.getElementById('giftCartIcon').textContent = icon;
+    document.getElementById('giftSelectedBanner').classList.add('visible');
+    document.getElementById('selectedGiftName').textContent = name;
+    document.getElementById('cartBadge').textContent = tQty() + 1;
+}
+
+function deselectGift() {
+    document.querySelectorAll('.gift-product-card.selected').forEach(c => c.classList.remove('selected'));
+    selectedGift = null; selectedGiftTier = null;
+    document.getElementById('giftCartItem').style.display = 'none';
+    document.getElementById('giftSelectedBanner').classList.remove('visible');
+    document.getElementById('cartBadge').textContent = tQty();
+}
+
+// Accordion for mobile
+function toggleGiftAccordion() {
+    if (window.innerWidth > 960) return; // only on mobile
+    const body = document.getElementById('giftBody');
+    const chevron = document.getElementById('giftChevron');
+    giftAccordionOpen = !giftAccordionOpen;
+    if (giftAccordionOpen) {
+        body.classList.remove('collapsed');
+        body.classList.add('expanded');
+        body.style.maxHeight = body.scrollHeight + 'px';
+        chevron.classList.add('open');
+    } else {
+        body.classList.add('collapsed');
+        body.classList.remove('expanded');
+        body.style.maxHeight = '0px';
+        chevron.classList.remove('open');
+    }
+}
+
+// Init accordion state on mobile
+function initAccordion() {
+    const body = document.getElementById('giftBody');
+    const chevron = document.getElementById('giftChevron');
+    if (window.innerWidth <= 960) {
+        // Start open on mobile
+        body.classList.add('expanded');
+        body.style.maxHeight = body.scrollHeight + 'px';
+        chevron.classList.add('open');
+        giftAccordionOpen = true;
+    } else {
+        body.classList.remove('collapsed', 'expanded');
+        body.style.maxHeight = '';
+        chevron.classList.remove('open');
+    }
+}
+
+window.addEventListener('resize', initAccordion);
+refresh();
+setTimeout(initAccordion, 50);
+</script>
+</body>
+</html>
