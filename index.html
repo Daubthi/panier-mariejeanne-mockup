@@ -67,6 +67,9 @@
         .breadcrumb { padding: 20px 40px 0; font-size: 13px; color: #999; }
         .page-title { padding: 8px 40px 24px; font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
 
+        /* ── Mobile Top Summary (hidden on desktop) ── */
+        .mobile-top-summary { display: none; }
+
         /* ── Layout ── */
         .main-content {
             display: flex; gap: 28px; padding: 0 40px 60px;
@@ -124,19 +127,58 @@
             padding: 2px 7px; border-radius: 4px; margin-left: 6px; vertical-align: middle;
         }
 
-        /* ══════════════════════
+        /* ══════════════════
+           RECOMMENDED PRODUCTS
+           ══════════════════ */
+        .reco-section {
+            margin: 10px 0 10px;
+        }
+        .reco-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .reco-header h3 { font-size: 15px; font-weight: 700; }
+        .reco-scroll-hint { font-size: 12px; color: #999; }
+        .reco-track {
+            display: flex; gap: 10px; overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; padding-bottom: 4px;
+        }
+        .reco-track::-webkit-scrollbar { display: none; }
+        .reco-card {
+            flex: 0 0 150px; scroll-snap-align: start;
+            background: #fff; border-radius: 10px; padding: 12px;
+            text-align: center; cursor: pointer; transition: box-shadow 0.15s;
+        }
+        .reco-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .reco-card-img {
+            width: 60px; height: 60px; margin: 0 auto 8px;
+            background: #f5f3ee; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; font-size: 28px;
+        }
+        .reco-card-name { font-size: 11.5px; font-weight: 600; line-height: 1.3; margin-bottom: 4px; }
+        .reco-card-price { font-size: 12px; font-weight: 700; }
+        .reco-card-rating { font-size: 10px; color: #999; margin-top: 2px; }
+        .reco-card-add {
+            margin-top: 8px; padding: 6px 12px;
+            background: #1a1a1a; color: #fff; border: none;
+            border-radius: 6px; font-size: 11px; font-weight: 600;
+            cursor: pointer; font-family: inherit;
+        }
+        .reco-card-add:hover { background: #333; }
+
+        /* ══════════════════
            GIFT MODULE
-           ══════════════════════ */
+           ══════════════════ */
         .gift-module {
             background: #fff; border-radius: 10px;
             padding: 24px; margin-top: 6px;
             border: 2px solid #f0f0ec; transition: border-color 0.3s;
         }
         .gift-module.active { border-color: #ffe600; }
-
         .gift-module-header {
-            display: flex; align-items: center; gap: 10px;
-            cursor: default;
+            display: flex; align-items: center; gap: 10px; cursor: default;
         }
         .gift-module-header h3 { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
         .gift-tag {
@@ -144,22 +186,15 @@
             padding: 3px 10px; border-radius: 20px;
             background: #ffe600; color: #1a1a1a;
         }
-        /* Chevron for mobile accordion */
         .gift-chevron {
             display: none; margin-left: 8px; transition: transform 0.3s;
             width: 20px; height: 20px; flex-shrink: 0;
         }
         .gift-chevron.open { transform: rotate(180deg); }
-
         .gift-module-sub { font-size: 13px; color: #888; margin-bottom: 18px; margin-top: 4px; }
-        .gift-body { /* wrapper for accordion content on mobile */ }
-
-        .gift-locked-msg {
-            text-align: center; padding: 24px 16px; color: #999; font-size: 14px;
-        }
+        .gift-locked-msg { text-align: center; padding: 24px 16px; color: #999; font-size: 14px; }
         .gift-locked-msg .lock-icon { font-size: 28px; display: block; margin-bottom: 6px; }
         .gift-locked-msg strong { color: #1a1a1a; }
-
         .gift-tier-label {
             font-size: 12.5px; font-weight: 600; color: #888;
             margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
@@ -167,9 +202,7 @@
         .tier-badge { padding: 2px 8px; border-radius: 4px; font-size: 10.5px; font-weight: 700; }
         .tier-badge.t1 { background: #ffe600; color: #1a1a1a; }
         .tier-badge.t2 { background: #1a1a1a; color: #ffe600; }
-
         .gift-products { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-
         .gift-product-card {
             border: 2px solid #f0f0ec; border-radius: 10px;
             padding: 14px 10px; cursor: pointer; transition: all 0.15s;
@@ -192,11 +225,9 @@
         .gift-product-name { font-size: 11.5px; font-weight: 600; line-height: 1.3; margin-bottom: 3px; }
         .gift-product-value { font-size: 10.5px; color: #aaa; }
         .gift-product-value s { color: #e74c3c; }
-
         .gift-tier-section { margin-top: 18px; padding-top: 18px; border-top: 1px solid #f0f0ec; }
         .gift-tier-section:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
         .gift-tier-section.locked { opacity: 0.35; pointer-events: none; }
-
         .gift-selected-banner {
             display: none; background: #f0fce8; border-radius: 8px;
             padding: 10px 14px; font-size: 13px; margin-top: 14px;
@@ -271,20 +302,24 @@
 
         /* ── Fixed mobile CTA ── */
         .mobile-cta-bar {
-            display: none; /* hidden on desktop */
+            display: none;
             position: fixed; bottom: 0; left: 0; right: 0;
-            background: #fff; padding: 12px 16px;
+            background: #fff; padding: 10px 16px 14px;
             box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
-            z-index: 100;
-            border-top: 1px solid #ebebeb;
+            z-index: 100; border-top: 1px solid #ebebeb;
         }
-        .mobile-cta-bar .mobile-cta-row {
+        .mobile-cta-top {
             display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
-        .mobile-cta-bar .mobile-total-label { font-size: 14px; color: #666; }
-        .mobile-cta-bar .mobile-total-price { font-size: 18px; font-weight: 800; }
-        .mobile-cta-bar .btn-checkout { padding: 14px; font-size: 15px; }
+        .mobile-cta-left { display: flex; flex-direction: column; }
+        .mobile-total-label { font-size: 11px; color: #888; }
+        .mobile-total-price { font-size: 18px; font-weight: 800; line-height: 1.2; }
+        .mobile-loyalty {
+            font-size: 10.5px; color: #3366ff; font-weight: 600;
+            display: flex; align-items: center; gap: 4px;
+        }
+        .mobile-cta-bar .btn-checkout { padding: 13px; font-size: 14px; }
 
         /* ── Promo ── */
         .promo-section { margin-top: 14px; }
@@ -309,24 +344,28 @@
         .trust-badge { text-align: center; font-size: 10.5px; color: #999; line-height: 1.3; }
         .trust-badge .badge-icon { font-size: 20px; margin-bottom: 3px; display: block; }
 
-        /* ════════════════════════════════
+        /* ════════════════════
            MOBILE RESPONSIVE
-           ════════════════════════════════ */
+           ════════════════════ */
         @media (max-width: 960px) {
-            .main-content { flex-direction: column; padding: 0 16px 130px; }
+            .main-content { flex-direction: column; padding: 0 16px 140px; }
             .cart-right { width: 100%; position: static; }
             .top-banner { font-size: 10.5px; gap: 12px; padding: 8px 12px; flex-wrap: wrap; justify-content: center; }
             .header { padding: 10px 16px; }
             .search-bar { display: none; }
             .btn-pro { display: none; }
-            .page-title { padding: 8px 16px 16px; font-size: 24px; }
+            .page-title { padding: 8px 16px 8px; font-size: 24px; }
             .breadcrumb { padding: 14px 16px 0; }
 
-            /* Cart items compact - stack actions below info */
-            .cart-item {
-                padding: 14px; gap: 10px;
-                flex-wrap: wrap;
-            }
+            /* Show mobile top summary */
+            .mobile-top-summary { display: block; margin: 0 16px 12px; }
+
+            /* Hide progress/loyalty from desktop summary on mobile */
+            .summary-card .progress-section { display: none; }
+            .summary-card .loyalty-box { display: none; }
+
+            /* Cart items compact */
+            .cart-item { padding: 14px; gap: 10px; flex-wrap: wrap; }
             .cart-item-img { width: 64px; height: 64px; }
             .cart-item-info { flex: 1; min-width: calc(100% - 80px); }
             .cart-item-name { font-size: 13.5px; }
@@ -350,21 +389,24 @@
 
             /* Summary compact */
             .summary-card { padding: 18px; }
-            /* Hide desktop checkout on mobile */
             .summary-card .btn-checkout { display: none; }
 
             /* Show fixed mobile CTA */
             .mobile-cta-bar { display: block; }
 
-            /* Gift in cart compact */
             .cart-item.gift-in-cart { padding: 12px; }
+
+            /* Reco cards smaller */
+            .reco-card { flex: 0 0 130px; padding: 10px; }
+            .reco-card-img { width: 50px; height: 50px; font-size: 24px; }
         }
 
         @media (max-width: 420px) {
             .top-banner { gap: 8px; font-size: 9.5px; }
             .header { padding: 8px 12px; }
             .logo-img { width: 40px; height: 40px; font-size: 7.5px; }
-            .main-content { padding: 0 12px 100px; }
+            .main-content { padding: 0 12px 140px; }
+            .mobile-top-summary { margin: 0 12px 10px; }
             .cart-item { padding: 12px 10px; gap: 10px; }
             .cart-item-img { width: 60px; height: 60px; }
             .cart-item-name { font-size: 12.5px; }
@@ -372,9 +414,26 @@
             .qty-btn { width: 30px; height: 30px; font-size: 14px; }
             .qty-value { width: 32px; height: 30px; line-height: 30px; font-size: 13px; }
             .item-total { font-size: 14px; min-width: 50px; }
-            .page-title { font-size: 22px; padding: 6px 12px 14px; }
+            .page-title { font-size: 22px; padding: 6px 12px 6px; }
             .breadcrumb { padding: 12px 12px 0; }
         }
+
+        /* ── Mobile top summary styles ── */
+        .mts-card {
+            background: #fff; border-radius: 10px; padding: 14px 16px;
+        }
+        .mts-progress { margin-bottom: 6px; }
+        .mts-progress .progress-track { height: 6px; }
+        .mts-progress .milestone-marker { width: 17px; height: 17px; font-size: 8px; }
+        .mts-progress .milestone-labels { height: 32px; margin-top: 8px; }
+        .mts-progress .milestone-label { font-size: 9.5px; }
+        .mts-progress .progress-message { font-size: 11.5px; padding: 6px 10px; margin-top: 4px; }
+        .mts-loyalty {
+            display: flex; align-items: center; gap: 8px;
+            background: #f0f4ff; border-radius: 6px;
+            padding: 8px 10px; margin-top: 8px; font-size: 11.5px;
+        }
+        .mts-loyalty strong { color: #3366ff; }
     </style>
 </head>
 <body>
@@ -413,6 +472,32 @@
 
 <div class="breadcrumb">Accueil</div>
 <h1 class="page-title">Panier</h1>
+
+<!-- ══ MOBILE TOP SUMMARY (progress + loyalty) ══ -->
+<div class="mobile-top-summary">
+    <div class="mts-card">
+        <div class="mts-progress">
+            <div class="progress-track">
+                <div class="progress-fill" id="mtsProgressFill"></div>
+                <div class="milestone-markers">
+                    <div class="milestone-marker" id="mts-marker-shipping" style="left:33%"><span class="m-icon">✓</span></div>
+                    <div class="milestone-marker" id="mts-marker-gift1" style="left:60%"><span class="m-icon">🎁</span></div>
+                    <div class="milestone-marker" id="mts-marker-gift2" style="left:100%"><span class="m-icon">🎁</span></div>
+                </div>
+            </div>
+            <div class="milestone-labels">
+                <div class="milestone-label" id="mts-label-shipping" style="left:33%"><span class="l-icon">🚚</span> 39,90&#8364;</div>
+                <div class="milestone-label" id="mts-label-gift1" style="left:60%"><span class="l-icon">🎁</span> 50&#8364;</div>
+                <div class="milestone-label" id="mts-label-gift2" style="left:100%"><span class="l-icon">🎁</span> 100&#8364;</div>
+            </div>
+            <div class="progress-message" id="mtsProgressMessage"></div>
+        </div>
+        <div class="mts-loyalty">
+            <span>🏠</span>
+            <span><strong id="mtsLoyalty">Fidelite : 0,54 &#8364;</strong> ajoutes a votre cagnotte</span>
+        </div>
+    </div>
+</div>
 
 <div class="main-content">
     <!-- LEFT -->
@@ -467,6 +552,51 @@
             </div>
         </div>
 
+        <!-- ══ RECOMMENDED PRODUCTS ══ -->
+        <div class="reco-section">
+            <div class="reco-header">
+                <h3>Completez votre commande</h3>
+                <span class="reco-scroll-hint">Swiper &rarr;</span>
+            </div>
+            <div class="reco-track">
+                <div class="reco-card">
+                    <div class="reco-card-img">🫧</div>
+                    <div class="reco-card-name">E-liquide Gelato 10ml</div>
+                    <div class="reco-card-price">9,90 &#8364;</div>
+                    <div class="reco-card-rating">&#11088; 4.6/5 (35)</div>
+                    <button class="reco-card-add">+ Ajouter</button>
+                </div>
+                <div class="reco-card">
+                    <div class="reco-card-img">🌿</div>
+                    <div class="reco-card-name">OG Kush Fleur CBD 2g</div>
+                    <div class="reco-card-price">7,90 &#8364;</div>
+                    <div class="reco-card-rating">&#11088; 4.8/5 (42)</div>
+                    <button class="reco-card-add">+ Ajouter</button>
+                </div>
+                <div class="reco-card">
+                    <div class="reco-card-img">💧</div>
+                    <div class="reco-card-name">Huile CBD 20% Menthe</div>
+                    <div class="reco-card-price">24,90 &#8364;</div>
+                    <div class="reco-card-rating">&#11088; 4.9/5 (28)</div>
+                    <button class="reco-card-add">+ Ajouter</button>
+                </div>
+                <div class="reco-card">
+                    <div class="reco-card-img">🍬</div>
+                    <div class="reco-card-name">Bonbons CBD Mangue</div>
+                    <div class="reco-card-price">5,90 &#8364;</div>
+                    <div class="reco-card-rating">&#11088; 4.7/5 (19)</div>
+                    <button class="reco-card-add">+ Ajouter</button>
+                </div>
+                <div class="reco-card">
+                    <div class="reco-card-img">🍵</div>
+                    <div class="reco-card-name">Infusion Detox CBD</div>
+                    <div class="reco-card-price">6,90 &#8364;</div>
+                    <div class="reco-card-rating">&#11088; 4.5/5 (15)</div>
+                    <button class="reco-card-add">+ Ajouter</button>
+                </div>
+            </div>
+        </div>
+
         <!-- GIFT MODULE -->
         <div class="gift-module" id="giftModule">
             <div class="gift-module-header" onclick="toggleGiftAccordion()">
@@ -475,69 +605,30 @@
                 <span class="gift-tag" id="giftTag">OFFERT</span>
                 <svg class="gift-chevron" id="giftChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
             </div>
-
             <div class="gift-body" id="giftBody">
                 <div class="gift-module-sub" id="giftModuleSub">Selectionnez 1 produit offert parmi notre selection</div>
-
                 <div class="gift-locked-msg" id="giftLockedMsg" style="display:none">
                     <span class="lock-icon">🔒</span>
                     Ajoutez <strong id="giftRemainingAmount">0 &#8364;</strong> pour debloquer votre cadeau !
                 </div>
-
-                <!-- Tier 1 -->
                 <div id="giftTier1" class="gift-tier-section" style="display:none">
                     <div class="gift-tier-label">Palier 50&#8364; <span class="tier-badge t1">1 cadeau au choix</span></div>
                     <div class="gift-products">
-                        <div class="gift-product-card" onclick="selectGift(this,1,'Bonbons CBD Fruits','🍬')">
-                            <div class="gift-product-img">🍬</div>
-                            <div class="gift-product-name">Bonbons CBD Fruits Rouges</div>
-                            <div class="gift-product-value">Valeur <s>4,90&#8364;</s></div>
-                        </div>
-                        <div class="gift-product-card" onclick="selectGift(this,1,'Infusion CBD Nuit','🍵')">
-                            <div class="gift-product-img">🍵</div>
-                            <div class="gift-product-name">Infusion CBD Nuit Paisible</div>
-                            <div class="gift-product-value">Valeur <s>5,90&#8364;</s></div>
-                        </div>
-                        <div class="gift-product-card" onclick="selectGift(this,1,'Sample Huile CBD 5%','💧')">
-                            <div class="gift-product-img">💧</div>
-                            <div class="gift-product-name">Sample Huile CBD 5%</div>
-                            <div class="gift-product-value">Valeur <s>3,90&#8364;</s></div>
-                        </div>
-                        <div class="gift-product-card" onclick="selectGift(this,1,'Grinder Marie Jeanne','⚙️')">
-                            <div class="gift-product-img">⚙️</div>
-                            <div class="gift-product-name">Grinder Marie Jeanne</div>
-                            <div class="gift-product-value">Valeur <s>6,90&#8364;</s></div>
-                        </div>
+                        <div class="gift-product-card" onclick="selectGift(this,1,'Bonbons CBD Fruits','🍬')"><div class="gift-product-img">🍬</div><div class="gift-product-name">Bonbons CBD Fruits Rouges</div><div class="gift-product-value">Valeur <s>4,90&#8364;</s></div></div>
+                        <div class="gift-product-card" onclick="selectGift(this,1,'Infusion CBD Nuit','🍵')"><div class="gift-product-img">🍵</div><div class="gift-product-name">Infusion CBD Nuit Paisible</div><div class="gift-product-value">Valeur <s>5,90&#8364;</s></div></div>
+                        <div class="gift-product-card" onclick="selectGift(this,1,'Sample Huile CBD 5%','💧')"><div class="gift-product-img">💧</div><div class="gift-product-name">Sample Huile CBD 5%</div><div class="gift-product-value">Valeur <s>3,90&#8364;</s></div></div>
+                        <div class="gift-product-card" onclick="selectGift(this,1,'Grinder Marie Jeanne','⚙️')"><div class="gift-product-img">⚙️</div><div class="gift-product-name">Grinder Marie Jeanne</div><div class="gift-product-value">Valeur <s>6,90&#8364;</s></div></div>
                     </div>
                 </div>
-
-                <!-- Tier 2 -->
                 <div id="giftTier2" class="gift-tier-section" style="display:none">
                     <div class="gift-tier-label">Palier 100&#8364; <span class="tier-badge t2">PREMIUM</span></div>
                     <div class="gift-products">
-                        <div class="gift-product-card" onclick="selectGift(this,2,'E-liquide Gelato 10ml','🫧')">
-                            <div class="gift-product-img">🫧</div>
-                            <div class="gift-product-name">E-liquide Gelato 10ml</div>
-                            <div class="gift-product-value">Valeur <s>12,90&#8364;</s></div>
-                        </div>
-                        <div class="gift-product-card" onclick="selectGift(this,2,'Huile CBD 10% Full Spectrum','🌟')">
-                            <div class="gift-product-img">🌟</div>
-                            <div class="gift-product-name">Huile CBD 10% Full Spectrum</div>
-                            <div class="gift-product-value">Valeur <s>19,90&#8364;</s></div>
-                        </div>
-                        <div class="gift-product-card" onclick="selectGift(this,2,'Pack Decouverte Fleurs','🌿')">
-                            <div class="gift-product-img">🌿</div>
-                            <div class="gift-product-name">Pack Decouverte Fleurs 3x1g</div>
-                            <div class="gift-product-value">Valeur <s>14,90&#8364;</s></div>
-                        </div>
-                        <div class="gift-product-card" onclick="selectGift(this,2,'Vaporisateur Pocket','💨')">
-                            <div class="gift-product-img">💨</div>
-                            <div class="gift-product-name">Vaporisateur Pocket</div>
-                            <div class="gift-product-value">Valeur <s>24,90&#8364;</s></div>
-                        </div>
+                        <div class="gift-product-card" onclick="selectGift(this,2,'E-liquide Gelato 10ml','🫧')"><div class="gift-product-img">🫧</div><div class="gift-product-name">E-liquide Gelato 10ml</div><div class="gift-product-value">Valeur <s>12,90&#8364;</s></div></div>
+                        <div class="gift-product-card" onclick="selectGift(this,2,'Huile CBD 10% Full Spectrum','🌟')"><div class="gift-product-img">🌟</div><div class="gift-product-name">Huile CBD 10% Full Spectrum</div><div class="gift-product-value">Valeur <s>19,90&#8364;</s></div></div>
+                        <div class="gift-product-card" onclick="selectGift(this,2,'Pack Decouverte Fleurs','🌿')"><div class="gift-product-img">🌿</div><div class="gift-product-name">Pack Decouverte Fleurs 3x1g</div><div class="gift-product-value">Valeur <s>14,90&#8364;</s></div></div>
+                        <div class="gift-product-card" onclick="selectGift(this,2,'Vaporisateur Pocket','💨')"><div class="gift-product-img">💨</div><div class="gift-product-name">Vaporisateur Pocket</div><div class="gift-product-value">Valeur <s>24,90&#8364;</s></div></div>
                     </div>
                 </div>
-
                 <div class="gift-selected-banner" id="giftSelectedBanner">
                     <span>✅</span>
                     <span><strong id="selectedGiftName">-</strong> ajoute a votre commande !</span>
@@ -558,7 +649,6 @@
                 <span>Livraison</span>
                 <span id="shippingPrice">4,90 &#8364;</span>
             </div>
-
             <div class="progress-section">
                 <div class="progress-track">
                     <div class="progress-fill" id="progressFill"></div>
@@ -575,19 +665,15 @@
                 </div>
                 <div class="progress-message" id="progressMessage"></div>
             </div>
-
             <div class="summary-line total">
                 <span>Total TTC</span>
                 <span id="totalPrice">53,53 &#8364;</span>
             </div>
-
             <div class="loyalty-box">
                 <span style="font-size:20px">🏠</span>
                 <div><strong>Fidelite : 0,54 &#8364;</strong> ajoutes a votre cagnotte</div>
             </div>
-
             <button class="btn-checkout">Commander</button>
-
             <div class="promo-section">
                 <div class="promo-label">Vous avez un code promo ?</div>
                 <div class="promo-input-group">
@@ -595,7 +681,6 @@
                     <button class="btn-promo">Ajouter</button>
                 </div>
             </div>
-
             <div class="trust-badges">
                 <div class="trust-badge"><span class="badge-icon">🔒</span>Paiement<br>securise</div>
                 <div class="trust-badge"><span class="badge-icon">📦</span>Colis<br>anonymise</div>
@@ -607,9 +692,14 @@
 
 <!-- Fixed mobile CTA -->
 <div class="mobile-cta-bar" id="mobileCta">
-    <div class="mobile-cta-row">
-        <span class="mobile-total-label">Total TTC</span>
-        <span class="mobile-total-price" id="mobileTotalPrice">53,53 &#8364;</span>
+    <div class="mobile-cta-top">
+        <div class="mobile-cta-left">
+            <span class="mobile-total-label">Total TTC</span>
+            <span class="mobile-total-price" id="mobileTotalPrice">53,53 &#8364;</span>
+        </div>
+        <div class="mobile-loyalty">
+            <span>🏠</span> +<strong id="mobileLoyaltyPts">0,54 &#8364;</strong> fidelite
+        </div>
     </div>
     <button class="btn-checkout">Commander</button>
 </div>
@@ -620,8 +710,7 @@ const items = [
     { name:'Amnesia Haze - Fleur CBD', unitPrice:8.90, qty:5 }
 ];
 const SHIPPING_THRESHOLD = 39.90, GIFT_T1 = 50, GIFT_T2 = 100, SHIPPING_COST = 4.90;
-let selectedGift = null, selectedGiftTier = null;
-let giftAccordionOpen = true;
+let selectedGift = null, selectedGiftTier = null, giftAccordionOpen = true;
 
 function fmt(v) { return v.toFixed(2).replace('.',',') + ' \u20AC'; }
 function sub() { return items.reduce((s,i) => s + i.unitPrice * i.qty, 0); }
@@ -640,8 +729,28 @@ function removeItem(i) {
     refresh();
 }
 
+function calcPct(s) {
+    if (s <= SHIPPING_THRESHOLD) return (s / SHIPPING_THRESHOLD) * 33;
+    if (s <= GIFT_T1) return 33 + ((s - SHIPPING_THRESHOLD) / (GIFT_T1 - SHIPPING_THRESHOLD)) * 27;
+    if (s <= GIFT_T2) return 60 + ((s - GIFT_T1) / (GIFT_T2 - GIFT_T1)) * 40;
+    return 100;
+}
+function gradientFor(s) {
+    if (s >= GIFT_T2) return 'linear-gradient(90deg,#ffe600,#ff9500,#ff5722)';
+    if (s >= GIFT_T1) return 'linear-gradient(90deg,#ffe600,#ff9500)';
+    if (s >= SHIPPING_THRESHOLD) return 'linear-gradient(90deg,#ffe600,#ffc800)';
+    return 'linear-gradient(90deg,#e0e0d8,#ffe600)';
+}
+function msgFor(s) {
+    if (s < SHIPPING_THRESHOLD) return 'Plus que <span class="hl">'+fmt(SHIPPING_THRESHOLD-s)+'</span> pour la <strong>livraison offerte</strong> 🚚';
+    if (s < GIFT_T1) return '🚚 Livraison offerte ! Plus que <span class="hl">'+fmt(GIFT_T1-s)+'</span> pour votre <strong>cadeau</strong> 🎁';
+    if (s < GIFT_T2) return '🎁 Cadeau debloque ! Plus que <span class="hl">'+fmt(GIFT_T2-s)+'</span> pour le <strong>cadeau Premium</strong> 🌟';
+    return '🌟 <strong>Tous les avantages debloques !</strong> 🚚 🎁';
+}
+
 function refresh() {
     const s = sub(), free = s >= SHIPPING_THRESHOLD, ship = free ? 0 : SHIPPING_COST, tot = s + ship;
+    const loyalty = (s * 0.01).toFixed(2).replace('.',',') + ' \u20AC';
 
     document.getElementById('articleCount').textContent = tQty() + ' article' + (tQty()>1?'s':'');
     document.getElementById('subtotalPrice').textContent = fmt(s);
@@ -652,37 +761,43 @@ function refresh() {
     document.getElementById('totalPrice').textContent = fmt(tot);
     document.getElementById('mobileTotalPrice').textContent = fmt(tot);
     document.getElementById('cartBadge').textContent = tQty() + (selectedGift ? 1 : 0);
+    document.getElementById('mobileLoyaltyPts').textContent = loyalty;
 
-    // Progress - map to visual positions (33%, 60%, 100%)
-    let pct = 0;
-    if (s <= SHIPPING_THRESHOLD) pct = (s / SHIPPING_THRESHOLD) * 33;
-    else if (s <= GIFT_T1) pct = 33 + ((s - SHIPPING_THRESHOLD) / (GIFT_T1 - SHIPPING_THRESHOLD)) * 27;
-    else if (s <= GIFT_T2) pct = 60 + ((s - GIFT_T1) / (GIFT_T2 - GIFT_T1)) * 40;
-    else pct = 100;
+    const pct = calcPct(s), grad = gradientFor(s), message = msgFor(s);
 
+    // Desktop progress
     const pf = document.getElementById('progressFill');
-    pf.style.width = pct + '%';
-    if (s >= GIFT_T2) pf.style.background = 'linear-gradient(90deg,#ffe600,#ff9500,#ff5722)';
-    else if (s >= GIFT_T1) pf.style.background = 'linear-gradient(90deg,#ffe600,#ff9500)';
-    else if (s >= SHIPPING_THRESHOLD) pf.style.background = 'linear-gradient(90deg,#ffe600,#ffc800)';
-    else pf.style.background = 'linear-gradient(90deg,#e0e0d8,#ffe600)';
-
+    pf.style.width = pct + '%'; pf.style.background = grad;
     setM('shipping', s >= SHIPPING_THRESHOLD);
     setM('gift1', s >= GIFT_T1);
     setM('gift2', s >= GIFT_T2);
+    document.getElementById('progressMessage').innerHTML = message;
 
-    const msg = document.getElementById('progressMessage');
-    if (s < SHIPPING_THRESHOLD) msg.innerHTML = 'Plus que <span class="hl">'+fmt(SHIPPING_THRESHOLD-s)+'</span> pour la <strong>livraison offerte</strong> 🚚';
-    else if (s < GIFT_T1) msg.innerHTML = '🚚 Livraison offerte ! Plus que <span class="hl">'+fmt(GIFT_T1-s)+'</span> pour votre <strong>cadeau</strong> 🎁';
-    else if (s < GIFT_T2) msg.innerHTML = '🎁 Cadeau debloque ! Plus que <span class="hl">'+fmt(GIFT_T2-s)+'</span> pour le <strong>cadeau Premium</strong> 🌟';
-    else msg.innerHTML = '🌟 <strong>Tous les avantages debloques !</strong> 🚚 🎁';
+    // Mobile top progress
+    const mpf = document.getElementById('mtsProgressFill');
+    mpf.style.width = pct + '%'; mpf.style.background = grad;
+    setM('mts-shipping', s >= SHIPPING_THRESHOLD, 'mts-');
+    setM('mts-gift1', s >= GIFT_T1, 'mts-');
+    setM('mts-gift2', s >= GIFT_T2, 'mts-');
+    document.getElementById('mtsProgressMessage').innerHTML = message;
+    document.getElementById('mtsLoyalty').innerHTML = 'Fidelite : ' + loyalty;
 
     updateGift(s);
 }
 
 function setM(id, on) {
-    document.getElementById('marker-'+id).classList.toggle('reached', on);
-    document.getElementById('label-'+id).classList.toggle('reached', on);
+    const marker = document.getElementById('marker-' + id) || document.getElementById(id.replace('mts-','mts-marker-'));
+    const label = document.getElementById('label-' + id) || document.getElementById(id.replace('mts-','mts-label-'));
+    // Fix: use direct IDs
+    const m = document.getElementById('marker-'+id);
+    const l = document.getElementById('label-'+id);
+    if (m) m.classList.toggle('reached', on);
+    if (l) l.classList.toggle('reached', on);
+    // Also handle mts- prefix
+    const m2 = document.getElementById('mts-marker-'+id.replace('mts-',''));
+    const l2 = document.getElementById('mts-label-'+id.replace('mts-',''));
+    if (m2) m2.classList.toggle('reached', on);
+    if (l2) l2.classList.toggle('reached', on);
 }
 
 function updateGift(s) {
@@ -732,31 +847,26 @@ function deselectGift() {
     document.getElementById('cartBadge').textContent = tQty();
 }
 
-// Accordion for mobile
 function toggleGiftAccordion() {
-    if (window.innerWidth > 960) return; // only on mobile
+    if (window.innerWidth > 960) return;
     const body = document.getElementById('giftBody');
     const chevron = document.getElementById('giftChevron');
     giftAccordionOpen = !giftAccordionOpen;
     if (giftAccordionOpen) {
-        body.classList.remove('collapsed');
-        body.classList.add('expanded');
+        body.classList.remove('collapsed'); body.classList.add('expanded');
         body.style.maxHeight = body.scrollHeight + 'px';
         chevron.classList.add('open');
     } else {
-        body.classList.add('collapsed');
-        body.classList.remove('expanded');
+        body.classList.add('collapsed'); body.classList.remove('expanded');
         body.style.maxHeight = '0px';
         chevron.classList.remove('open');
     }
 }
 
-// Init accordion state on mobile
 function initAccordion() {
     const body = document.getElementById('giftBody');
     const chevron = document.getElementById('giftChevron');
     if (window.innerWidth <= 960) {
-        // Start open on mobile
         body.classList.add('expanded');
         body.style.maxHeight = body.scrollHeight + 'px';
         chevron.classList.add('open');
