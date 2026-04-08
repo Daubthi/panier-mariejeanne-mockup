@@ -7,6 +7,29 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* ── Password Gate ── */
+        #passwordGate {
+            position:fixed;inset:0;z-index:99999;background:#f5f5f0;
+            display:flex;align-items:center;justify-content:center;
+            font-family:'DM Sans',sans-serif;
+        }
+        #passwordGate.hidden{display:none}
+        .gate-box{text-align:center;max-width:340px;padding:20px}
+        .gate-logo{width:64px;height:64px;background:#1a1a1a;border-radius:50%;
+            display:inline-flex;align-items:center;justify-content:center;
+            color:#fff;font-size:9px;font-weight:800;line-height:1.1;margin-bottom:20px}
+        .gate-title{font-size:20px;font-weight:700;margin-bottom:6px}
+        .gate-sub{font-size:13px;color:#888;margin-bottom:20px}
+        .gate-input{width:100%;padding:12px 16px;border:2px solid #e5e5e5;border-radius:10px;
+            font-size:15px;font-family:inherit;outline:none;text-align:center;margin-bottom:12px}
+        .gate-input:focus{border-color:#1a1a1a}
+        .gate-btn{width:100%;padding:13px;background:#1a1a1a;color:#fff;border:none;
+            border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+        .gate-btn:hover{background:#333}
+        .gate-error{color:#e74c3c;font-size:12px;margin-top:8px;display:none}
+        #appContent{display:none}
+        #appContent.unlocked{display:block}
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -501,6 +524,22 @@
     </style>
 </head>
 <body>
+
+<!-- Password Gate -->
+<div id="passwordGate">
+    <div class="gate-box">
+        <div class="gate-logo">MARIE<br>JEANNE</div>
+        <div class="gate-title">Acces protege</div>
+        <div class="gate-sub">Mockup interne — Entrez le mot de passe</div>
+        <form onsubmit="return checkPwd()">
+            <input class="gate-input" id="gateInput" type="password" placeholder="Mot de passe" autofocus>
+            <button class="gate-btn" type="submit">Acceder</button>
+        </form>
+        <div class="gate-error" id="gateError">Mot de passe incorrect</div>
+    </div>
+</div>
+
+<div id="appContent">
 
 <!-- Top Banner -->
 <div class="top-banner">
@@ -1031,6 +1070,28 @@ setTimeout(initAccordion, 50);
         }, { passive: true });
     }
 }
+</script>
+</div><!-- /appContent -->
+
+<script>
+const HASH = '9a89a1beda6f25e1e7e9bffab0f0e1626d6b2c4b3a3c0e5a6d8e7f7a9b1c2d3e';
+async function sha256(str){const b=new TextEncoder().encode(str);const h=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,'0')).join('')}
+function checkPwd(){
+    const v=document.getElementById('gateInput').value;
+    if(v==='mjgift'){
+        sessionStorage.setItem('mj_auth','1');
+        unlock();
+    } else {
+        document.getElementById('gateError').style.display='block';
+        document.getElementById('gateInput').value='';
+    }
+    return false;
+}
+function unlock(){
+    document.getElementById('passwordGate').classList.add('hidden');
+    document.getElementById('appContent').classList.add('unlocked');
+}
+if(sessionStorage.getItem('mj_auth')==='1') unlock();
 </script>
 </body>
 </html>
