@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marie Jeanne — Back-Office Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --yellow: #ffe600;
+            --dark: #1a1a1a;
+            --text: #1a1a1a;
+            --light-bg: #f5f5f0;
+            --white: #ffffff;
+            --border: #e0e0db;
+            --green: #22c55e;
+            --grey: #9ca3af;
+            --red: #ef4444;
+            --sidebar-w: 250px;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--light-bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--dark);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            z-index: 100;
+        }
+        .sidebar-logo {
+            padding: 28px 24px 24px;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+        .sidebar-logo span { color: var(--yellow); }
+        .sidebar-nav { flex: 1; padding: 16px 0; }
+        .sidebar-nav a {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 24px;
+            color: rgba(255,255,255,.55);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all .15s;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-nav a:hover { color: #fff; background: rgba(255,255,255,.04); }
+        .sidebar-nav a.active {
+            color: #fff;
+            background: rgba(255,230,0,.06);
+            border-left-color: var(--yellow);
+        }
+        .sidebar-nav a .icon { font-size: 18px; width: 24px; text-align: center; }
+        .sidebar-user {
+            padding: 16px 24px;
+            border-top: 1px solid rgba(255,255,255,.08);
+            display: flex; align-items: center; gap: 12px;
+            font-size: 13px;
+        }
+        .sidebar-user .avatar {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            background: var(--yellow);
+            color: var(--dark);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 13px;
+        }
+        .sidebar-user .info { line-height: 1.3; }
+        .sidebar-user .name { font-weight: 600; color: #fff; }
+        .sidebar-user .role { color: rgba(255,255,255,.4); font-size: 12px; }
+
+        /* ── Main ── */
+        .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            padding: 0 32px;
+            height: 64px;
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 50;
+        }
+        .breadcrumb { font-size: 14px; color: var(--grey); }
+        .breadcrumb strong { color: var(--text); font-weight: 600; }
+        .header-actions { display: flex; gap: 10px; }
+        .btn {
+            padding: 9px 20px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all .15s;
+        }
+        .btn-primary { background: var(--yellow); color: var(--dark); }
+        .btn-primary:hover { background: #f0d900; box-shadow: 0 2px 8px rgba(255,230,0,.3); }
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            color: var(--text);
+        }
+        .btn-outline:hover { border-color: var(--dark); }
+        .btn-sm { padding: 6px 14px; font-size: 12px; }
+        .btn-danger { background: #fef2f2; color: var(--red); }
+        .btn-danger:hover { background: #fee2e2; }
+
+        /* Content */
+        .content { padding: 32px; flex: 1; }
+
+        /* Tabs */
+        .tabs {
+            display: flex; gap: 0;
+            background: var(--white);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 28px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 14px 20px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--grey);
+            transition: all .15s;
+            border-bottom: 2px solid transparent;
+        }
+        .tab-btn:hover { color: var(--text); background: rgba(0,0,0,.02); }
+        .tab-btn.active {
+            color: var(--text);
+            background: var(--white);
+            border-bottom-color: var(--yellow);
+        }
+
+        /* Panels */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* Cards / Sections */
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .card-title .badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: var(--yellow);
+            color: var(--dark);
+        }
+
+        /* Form rows */
+        .form-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--light-bg);
+        }
+        .form-row:last-child { border-bottom: none; }
+        .form-label { font-size: 14px; font-weight: 500; }
+        .form-label small { display: block; color: var(--grey); font-weight: 400; font-size: 12px; margin-top: 2px; }
+        .form-input {
+            padding: 9px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            width: 140px;
+            text-align: right;
+            transition: border-color .15s;
+        }
+        .form-input:focus { outline: none; border-color: var(--yellow); }
+
+        /* Toggle Switch */
+        .toggle {
+            position: relative;
+            width: 46px; height: 26px;
+            cursor: pointer;
+        }
+        .toggle input { display: none; }
+        .toggle .slider {
+            position: absolute;
+            inset: 0;
+            background: #d1d5db;
+            border-radius: 26px;
+            transition: .2s;
+        }
+        .toggle .slider::before {
+            content: '';
+            position: absolute;
+            width: 20px; height: 20px;
+            left: 3px; top: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: .2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,.15);
+        }
+        .toggle input:checked + .slider { background: var(--green); }
+        .toggle input:checked + .slider::before { transform: translateX(20px); }
+
+        /* Tables */
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        thead th {
+            text-align: left;
+            padding: 10px 14px;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: var(--grey);
+            border-bottom: 1px solid var(--border);
+        }
+        tbody tr { transition: background .1s; }
+        tbody tr:hover { background: var(--light-bg); }
+        tbody td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--light-bg);
+            vertical-align: middle;
+        }
+        .product-cell { display: flex; align-items: center; gap: 12px; }
+        .product-img {
+            width: 40px; height: 40px;
+            background: var(--light-bg);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+        }
+        .product-name { font-weight: 600; }
+        .drag-handle { cursor: grab; color: var(--grey); font-size: 16px; user-select: none; }
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .status-actif { background: #dcfce7; color: #16a34a; }
+        .status-inactif { background: #f3f4f6; color: #6b7280; }
+        .actions-cell { display: flex; gap: 6px; }
+        .action-btn {
+            padding: 5px 10px;
+            font-size: 12px;
+            font-family: inherit;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--white);
+            cursor: pointer;
+            transition: all .15s;
+            font-weight: 500;
+        }
+        .action-btn:hover { background: var(--light-bg); border-color: var(--dark); }
+        .action-btn.delete { color: var(--red); }
+        .action-btn.delete:hover { background: #fef2f2; border-color: var(--red); }
+        .add-product-btn {
+            margin-top: 16px;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+        .stat-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+        .stat-label { font-size: 12px; color: var(--grey); font-weight: 500; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 8px; }
+        .stat-value { font-size: 28px; font-weight: 700; }
+        .stat-sub { font-size: 13px; color: var(--grey); margin-top: 4px; }
+        .stat-value .highlight { color: var(--green); }
+
+        /* Bar Chart */
+        .chart-card { padding: 28px; }
+        .chart-title { font-size: 16px; font-weight: 700; margin-bottom: 24px; }
+        .chart { display: flex; align-items: flex-end; gap: 24px; height: 180px; padding-bottom: 30px; position: relative; }
+        .chart::after {
+            content: '';
+            position: absolute;
+            bottom: 28px; left: 0; right: 0;
+            height: 1px;
+            background: var(--border);
+        }
+        .chart-group {
+            flex: 1; display: flex; gap: 6px; align-items: flex-end;
+            position: relative;
+        }
+        .chart-group .label {
+            position: absolute;
+            bottom: -24px;
+            left: 50%; transform: translateX(-50%);
+            font-size: 11px;
+            color: var(--grey);
+            white-space: nowrap;
+        }
+        .bar {
+            flex: 1;
+            border-radius: 4px 4px 0 0;
+            min-width: 28px;
+            position: relative;
+            transition: all .3s;
+        }
+        .bar:hover { opacity: .85; }
+        .bar.tier1 { background: var(--yellow); }
+        .bar.tier2 { background: var(--dark); }
+        .chart-legend {
+            display: flex; gap: 20px; margin-top: 16px; justify-content: center;
+        }
+        .chart-legend span {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 12px; color: var(--grey);
+        }
+        .chart-legend .dot {
+            width: 10px; height: 10px; border-radius: 3px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 32px; right: 32px;
+            background: var(--dark);
+            color: #fff;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0,0,0,.18);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all .3s;
+            z-index: 999;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar { width: 72px; }
+            .sidebar-logo { padding: 20px 0; text-align: center; font-size: 14px; letter-spacing: 0; }
+            .sidebar-logo span:nth-child(2) { display: none; }
+            .sidebar-nav a span:not(.icon) { display: none; }
+            .sidebar-nav a { padding: 14px 0; justify-content: center; }
+            .sidebar-user .info { display: none; }
+            .sidebar-user { justify-content: center; }
+            .main { margin-left: 72px; }
+            .content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="sidebar-logo"><span>MARIE</span> <span>JEANNE</span></div>
+    <nav class="sidebar-nav">
+        <a href="#" data-nav="dashboard"><span class="icon">&#9635;</span><span>Tableau de bord</span></a>
+        <a href="#" data-nav="gift" class="active"><span class="icon">&#127873;</span><span>Module Cadeau</span></a>
+        <a href="#" data-nav="loyalty"><span class="icon">&#11088;</span><span>Fid&eacute;lit&eacute;</span></a>
+        <a href="#" data-nav="recommended"><span class="icon">&#128640;</span><span>Produits Recommand&eacute;s</span></a>
+        <a href="#" data-nav="settings"><span class="icon">&#9881;</span><span>Param&egrave;tres</span></a>
+    </nav>
+    <div class="sidebar-user">
+        <div class="avatar">MJ</div>
+        <div class="info">
+            <div class="name">Admin MJ</div>
+            <div class="role">Super Admin</div>
+        </div>
+    </div>
+</aside>
+
+<!-- Main -->
+<div class="main">
+
+    <!-- Header -->
+    <header class="header">
+        <div class="breadcrumb">Module Cadeau &rsaquo; <strong>Configuration</strong></div>
+        <div class="header-actions">
+            <button class="btn btn-outline" id="btnPreview">Aper&ccedil;u</button>
+            <button class="btn btn-primary" id="btnSave">Enregistrer</button>
+        </div>
+    </header>
+
+    <!-- Content -->
+    <div class="content">
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="general">Configuration G&eacute;n&eacute;rale</button>
+            <button class="tab-btn" data-tab="gifts">Produits Cadeaux</button>
+            <button class="tab-btn" data-tab="stats">Statistiques</button>
+            <button class="tab-btn" data-tab="recommended">Produits Recommand&eacute;s</button>
+        </div>
+
+        <!-- ═══ Tab 1: Configuration Générale ═══ -->
+        <div class="tab-panel active" id="panel-general">
+            <div class="card">
+                <div class="card-title">Module Cadeau</div>
+                <div class="form-row">
+                    <div class="form-label">Activer le module cadeau<small>Affiche le s&eacute;lecteur de cadeau dans le panier</small></div>
+                    <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+                <div class="form-row">
+                    <div class="form-label">Seuil de livraison gratuite<small>Montant minimum pour la livraison offerte</small></div>
+                    <input type="text" class="form-input" value="39,90 &euro;">
+                </div>
+                <div class="form-row">
+                    <div class="form-label">Seuil Palier 1<small>Montant minimum pour d&eacute;bloquer le palier 1</small></div>
+                    <input type="text" class="form-input" value="50,00 &euro;">
+                </div>
+                <div class="form-row">
+                    <div class="form-label">Seuil Palier 2<small>Montant minimum pour d&eacute;bloquer le palier 2 (Premium)</small></div>
+                    <input type="text" class="form-input" value="100,00 &euro;">
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Affichage</div>
+                <div class="form-row">
+                    <div class="form-label">Afficher la barre de progression<small>Barre visuelle indiquant la progression vers le prochain palier</small></div>
+                    <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+                <div class="form-row">
+                    <div class="form-label">Afficher les produits recommand&eacute;s<small>Suggestions de produits pour atteindre le palier suivant</small></div>
+                    <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ Tab 2: Produits Cadeaux ═══ -->
+        <div class="tab-panel" id="panel-gifts">
+            <!-- Palier 1 -->
+            <div class="card">
+                <div class="card-title">Palier 1 <span class="badge">50 &euro;</span></div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:30px"></th>
+                                <th>Produit</th>
+                                <th>Valeur affich&eacute;e</th>
+                                <th>Stock</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="drag-handle">&#9776;</span></td>
+                                <td><div class="product-cell"><div class="product-img">&#127852;</div><span class="product-name">Bonbons CBD Fruits Rouges</span></div></td>
+                                <td>4,90 &euro;</td>
+                                <td>145</td>
+                                <td><span class="status-badge status-actif">Actif</span></td>
+                                <td><div class="actions-cell"><button class="action-btn">&Eacute;diter</button><button class="action-btn delete">Supprimer</button></div></td>
+                            </tr>
+                            <tr>
+                                <td><span class="drag-handle">&#9776;</span></td>
+                                <td><div class="product-cell"><div class="product-img">&#9749;</div><span class="product-name">Infusion CBD Nuit Paisible</span></div></td>
+                                <td>5,90 &euro;</td>
+                                <td>89</td>
+                                <td><span class="status-badge status-actif">Actif</span></td>
+                                <td><div class="actions-cell"><button class="action-btn">&Eacute;diter</button><button class="action-btn delete">Supprimer</button></div></td>
+                            </tr>
+                            <tr>
+                                <td><span class="drag-handle">&#9776;</span></td>
+                                <td><div class="product-cell"><div class="product-img">&#128167;</div><span class="product-name">Sample Huile CBD 5%</span></div></td>
+                                <td>3,90 &euro;</td>
+                                <td>234</td>
+                                <td><span class="status-badge status-actif">Actif</span></td>
+                                <td><div class="actions-cell"><button class="action-btn">&Eacute;diter</button><button class="action-btn delete">Supprimer</button></div></td>
+                            </tr>
+                            <tr>
+                                <td><span class="drag-handle">&#9776;</span></td>
+                                <td><div class="product-cell"><div class="product-img">&#128737;</div><span class="product-name">Grinder Marie Jeanne</span></div></td>
+                                <td>6,90 &euro;</td>
+                                <td>52</td>
+                                <td><span class="status-badge status-actif">Actif</span></td>
+                                <td><div class="actions-cell"><button class="action-btn">&Eacute;diter</button><button class="action-btn delete">Supprimer</button></div></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn btn-outline btn-sm add-product-btn">+ Ajouter un produit cadeau</button>
+            </div>
+
+            <!-- Palier 2 -->
+            <div class="card">
+                <div class="card-title">Palier 2 &mdash; Premium <span class="badge">100 &euro;</span></div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:30px"></th>
+                                <th>Produit</th>
+                                <th>Valeur affich&eacute;e</th>
+                                <th>Stock</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="drag-handle">&#9776;</span></td>
+                                <td><div class="product-cell"><div class="product-img">&#128168;</div><span class="product-name">E-liquide Gelato 10ml</span></div></td>
+                                <td>12,90 &euro;</td>
+                                <td>67</td>
+                                <td><span class="status-badge status-actif">Actif</span></td>
+                                <td><div class="actions-cell"><button class="action-btn">&Eacute;diter</button><button class="action-btn delete">Supprimer</button></div></td>
+                            </tr>
+                            <tr>
+                                <td><span class="drag-handle">&#9776;</span></td>
+                                <td><div class="product-cell"><div class="product-img">&#128167;</div><span class="product-name">Huile CBD 10% Full Spectrum</span></div></td>
+                                <td>19,90 &euro;</td>
+                                <td>34</td>
+                                <td><span class="status-badge status-actif">Actif</span></td>
+                                <td><div class="actions-cell"><button class="action-btn">&Eacute;diter</button><button class="action-btn delete">Supprimer</button></div></td>
+                            </tr>
+                            <tr>
+                                <td><span class="drag-handle">&#9776;</span></td>
+                                <td><div class="product-cell"><div class="product-img">&#127807;</div><span class="product-name">Pack D&eacute;couverte Fleurs 3x1g</span></div></td>
+                                <td>14,90 &euro;</td>
+                                <td>78</td>
+                                <td><span class="status-badge status-actif">Actif</span></td>
+                                <td><div class="actions-cell"><button class="action-btn">&Eacute;diter</button><button class="action-btn delete">Supprimer</button></div></td>
+                            </tr>
+                            <tr>
+                                <td><span class="drag-handle">&#9776;</span></td>
+                                <td><div class="product-cell"><div class="product-img">&#128684;</div><span class="product-name">Vaporisateur Pocket</span></div></td>
+                                <td>24,90 &euro;</td>
+                                <td>23</td>
+                                <td><span class="status-badge status-actif">Actif</span></td>
+                                <td><div class="actions-cell"><button class="action-btn">&Eacute;diter</button><button class="action-btn delete">Supprimer</button></div></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn btn-outline btn-sm add-product-btn">+ Ajouter un produit cadeau</button>
+            </div>
+        </div>
+
+        <!-- ═══ Tab 3: Statistiques ═══ -->
+        <div class="tab-panel" id="panel-stats">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Cadeaux distribu&eacute;s ce mois</div>
+                    <div class="stat-value">342</div>
+                    <div class="stat-sub">+18% vs mois dernier</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Palier le plus atteint</div>
+                    <div class="stat-value">Palier 1</div>
+                    <div class="stat-sub">78% des cadeaux</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Augmentation panier moyen</div>
+                    <div class="stat-value"><span class="highlight">+12,4%</span></div>
+                    <div class="stat-sub">Depuis l'activation du module</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Cadeau le plus choisi</div>
+                    <div class="stat-value" style="font-size:18px;">Bonbons CBD Fruits Rouges</div>
+                    <div class="stat-sub">34% des s&eacute;lections</div>
+                </div>
+            </div>
+
+            <div class="card chart-card">
+                <div class="chart-title">Cadeaux distribu&eacute;s par palier &mdash; 4 derni&egrave;res semaines</div>
+                <div class="chart">
+                    <div class="chart-group">
+                        <div class="bar tier1" style="height:55%"></div>
+                        <div class="bar tier2" style="height:25%"></div>
+                        <div class="label">Sem. 1</div>
+                    </div>
+                    <div class="chart-group">
+                        <div class="bar tier1" style="height:70%"></div>
+                        <div class="bar tier2" style="height:30%"></div>
+                        <div class="label">Sem. 2</div>
+                    </div>
+                    <div class="chart-group">
+                        <div class="bar tier1" style="height:60%"></div>
+                        <div class="bar tier2" style="height:40%"></div>
+                        <div class="label">Sem. 3</div>
+                    </div>
+                    <div class="chart-group">
+                        <div class="bar tier1" style="height:85%"></div>
+                        <div class="bar tier2" style="height:50%"></div>
+                        <div class="label">Sem. 4</div>
+                    </div>
+                </div>
+                <div class="chart-legend">
+                    <span><span class="dot" style="background:var(--yellow)"></span> Palier 1 (50 &euro;)</span>
+                    <span><span class="dot" style="background:var(--dark)"></span> Palier 2 (100 &euro;)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ Tab 4: Produits Recommandés ═══ -->
+        <div class="tab-panel" id="panel-recommended">
+            <div class="card">
+                <div class="card-title">Produits Recommand&eacute;s</div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Produit</th>
+                                <th>Prix</th>
+                                <th>Taux d'ajout au panier</th>
+                                <th>Statut</th>
+                                <th>Actif</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><div class="product-cell"><div class="product-img">&#127807;</div><span class="product-name">Fleur CBD - Amnesia Haze 5g</span></div></td>
+                                <td>29,90 &euro;</td>
+                                <td>18,2%</td>
+                                <td><span class="status-badge status-actif">Actif</span></td>
+                                <td><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></td>
+                                <td><div class="actions-cell"><button class="action-btn">&Eacute;diter</button><button class="action-btn delete">Supprimer</button></div></td>
+                            </tr>
+                            <tr>
+                                <td><div class="product-cell"><div class="product-img">&#128167;</div><span class="product-name">Huile CBD 15% Premium</span></div></td>
+                                <td>39,90 &euro;</td>
+                                <td>14,7%</td>
+                                <td><span class="status-badge status-actif">Actif</span></td>
+                                <td><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></td>
+                                <td><div class="actions-cell"><button class="action-btn">&Eacute;diter</button><button class="action-btn delete">Supprimer</button></div></td>
+                            </tr>
+                            <tr>
+                                <td><div class="product-cell"><div class="product-img">&#128168;</div><span class="product-name">E-liquide Mango Kush 30ml</span></div></td>
+                                <td>24,90 &euro;</td>
+                                <td>11,3%</td>
+                                <td><span class="status-badge status-actif">Actif</span></td>
+                                <td><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></td>
+                                <td><div class="actions-cell"><button class="action-btn">&Eacute;diter</button><button class="action-btn delete">Supprimer</button></div></td>
+                            </tr>
+                            <tr>
+                                <td><div class="product-cell"><div class="product-img">&#127852;</div><span class="product-name">Gummies CBD Sommeil x30</span></div></td>
+                                <td>19,90 &euro;</td>
+                                <td>22,1%</td>
+                                <td><span class="status-badge status-actif">Actif</span></td>
+                                <td><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></td>
+                                <td><div class="actions-cell"><button class="action-btn">&Eacute;diter</button><button class="action-btn delete">Supprimer</button></div></td>
+                            </tr>
+                            <tr>
+                                <td><div class="product-cell"><div class="product-img">&#9749;</div><span class="product-name">Tisane CBD R&eacute;lax Bio</span></div></td>
+                                <td>12,90 &euro;</td>
+                                <td>9,8%</td>
+                                <td><span class="status-badge status-inactif">Inactif</span></td>
+                                <td><label class="toggle"><input type="checkbox"><span class="slider"></span></label></td>
+                                <td><div class="actions-cell"><button class="action-btn">&Eacute;diter</button><button class="action-btn delete">Supprimer</button></div></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn btn-outline btn-sm add-product-btn">+ Ajouter un produit</button>
+            </div>
+        </div>
+
+    </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- Toast -->
+<div class="toast" id="toast">&#10003; Modifications enregistr&eacute;es !</div>
+
+<script>
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+        });
+    });
+
+    // Sidebar nav
+    document.querySelectorAll('.sidebar-nav a').forEach(link => {
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            document.querySelectorAll('.sidebar-nav a').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+        });
+    });
+
+    // Save button toast
+    document.getElementById('btnSave').addEventListener('click', () => {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    });
+
+    // Toggle status badges when recommended product toggles change
+    document.querySelectorAll('#panel-recommended .toggle input').forEach(toggle => {
+        toggle.addEventListener('change', function() {
+            const row = this.closest('tr');
+            const badge = row.querySelector('.status-badge');
+            if (this.checked) {
+                badge.className = 'status-badge status-actif';
+                badge.textContent = 'Actif';
+            } else {
+                badge.className = 'status-badge status-inactif';
+                badge.textContent = 'Inactif';
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
