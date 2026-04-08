@@ -285,11 +285,51 @@
 
         /* ── Loyalty ── */
         .loyalty-box {
-            display: flex; align-items: center; gap: 10px;
             background: #f0f4ff; border-radius: 8px;
-            padding: 12px; margin: 14px 0; font-size: 12.5px;
+            padding: 14px; margin: 14px 0; font-size: 12.5px;
         }
         .loyalty-box strong { color: #3366ff; }
+        .loyalty-top {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .loyalty-top-text { flex: 1; }
+        .loyalty-cagnotte {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-top: 10px; padding-top: 10px;
+            border-top: 1px solid #d8e2ff;
+        }
+        .loyalty-cagnotte-info {
+            display: flex; align-items: center; gap: 8px;
+        }
+        .loyalty-cagnotte-amount {
+            font-size: 18px; font-weight: 800; color: #3366ff;
+        }
+        .loyalty-cagnotte-label {
+            font-size: 11px; color: #666; line-height: 1.3;
+        }
+        .btn-use-loyalty {
+            padding: 8px 16px; background: #3366ff; color: #fff;
+            border: none; border-radius: 6px; font-size: 12.5px;
+            font-weight: 700; cursor: pointer; font-family: inherit;
+            transition: background 0.15s; white-space: nowrap;
+        }
+        .btn-use-loyalty:hover { background: #2255dd; }
+        .btn-use-loyalty.used {
+            background: #e8f5e9; color: #27ae60; cursor: default;
+        }
+        .loyalty-applied-msg {
+            display: none; margin-top: 8px;
+            font-size: 12px; color: #27ae60; font-weight: 600;
+        }
+        .loyalty-applied-msg.visible { display: flex; align-items: center; gap: 6px; }
+        /* Highlight animation */
+        .loyalty-box.highlight {
+            animation: pulseBlue 1s ease 2;
+        }
+        @keyframes pulseBlue {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(51,102,255,0); }
+            50% { box-shadow: 0 0 0 6px rgba(51,102,255,0.2); }
+        }
 
         /* ── CTA ── */
         .btn-checkout {
@@ -361,9 +401,8 @@
             /* Show mobile top summary */
             .mobile-top-summary { display: block; margin: 0 16px 12px; }
 
-            /* Hide progress/loyalty from desktop summary on mobile */
+            /* Hide progress from desktop summary on mobile (loyalty stays visible) */
             .summary-card .progress-section { display: none; }
-            .summary-card .loyalty-box { display: none; }
 
             /* Cart items compact - grid 2 rows */
             .cart-item {
@@ -694,11 +733,24 @@
                 <span>Total TTC</span>
                 <span id="totalPrice">53,53 &#8364;</span>
             </div>
-            <div class="loyalty-box">
-                <span style="font-size:20px">🏠</span>
-                <div><strong>Fidelite : 0,54 &#8364;</strong> ajoutes a votre cagnotte</div>
+            <div class="loyalty-box" id="loyaltyBox">
+                <div class="loyalty-top">
+                    <span style="font-size:20px">🏠</span>
+                    <div class="loyalty-top-text">Cette commande vous rapporte <strong id="loyaltyEarn">0,54 &#8364;</strong> de cagnotte</div>
+                </div>
+                <div class="loyalty-cagnotte" id="loyaltyCagnotte">
+                    <div class="loyalty-cagnotte-info">
+                        <div class="loyalty-cagnotte-amount" id="loyaltyCagnotteAmount">3,50 &#8364;</div>
+                        <div class="loyalty-cagnotte-label">disponibles<br>dans votre cagnotte</div>
+                    </div>
+                    <button class="btn-use-loyalty" id="btnUseLoyalty" onclick="toggleUseLoyalty()">Utiliser</button>
+                </div>
+                <div class="loyalty-applied-msg" id="loyaltyAppliedMsg">
+                    <span>✅</span> <span><strong id="loyaltyUsedAmount">3,50 &#8364;</strong> deduits de votre cagnotte</span>
+                    <span style="margin-left:auto;font-size:11px;color:#999;text-decoration:underline;cursor:pointer" onclick="toggleUseLoyalty()">Annuler</span>
+                </div>
             </div>
-            <button class="btn-checkout">Commander</button>
+            <button class="btn-checkout" id="btnCheckoutSummary">Commander</button>
             <div class="promo-section">
                 <div class="promo-label">Vous avez un code promo ?</div>
                 <div class="promo-input-group">
@@ -722,11 +774,11 @@
             <span class="mobile-total-label">Total TTC</span>
             <span class="mobile-total-price" id="mobileTotalPrice">53,53 &#8364;</span>
         </div>
-        <div class="mobile-loyalty">
-            <span>🏠</span> +<strong id="mobileLoyaltyPts">0,54 &#8364;</strong> fidelite
+        <div class="mobile-loyalty" id="mobileLoyaltyHint">
+            <span>🏠</span> <strong id="mobileCagnotteHint">3,50 &#8364;</strong> de cagnotte dispo
         </div>
     </div>
-    <button class="btn-checkout">Commander</button>
+    <button class="btn-checkout" id="btnMobileCheckout" onclick="handleMobileCheckout()">Commander</button>
 </div>
 
 <script>
@@ -736,6 +788,9 @@ const items = [
 ];
 const SHIPPING_THRESHOLD = 39.90, GIFT_T1 = 50, GIFT_T2 = 100, SHIPPING_COST = 4.90;
 let selectedGift = null, selectedGiftTier = null, giftAccordionOpen = true;
+let cagnotte = 3.50; // Simulated: user's existing loyalty cagnotte in €
+let loyaltyUsed = false;
+let hasScrolledToLoyalty = false;
 
 function fmt(v) { return v.toFixed(2).replace('.',',') + ' \u20AC'; }
 function sub() { return items.reduce((s,i) => s + i.unitPrice * i.qty, 0); }
@@ -774,8 +829,10 @@ function msgFor(s) {
 }
 
 function refresh() {
-    const s = sub(), free = s >= SHIPPING_THRESHOLD, ship = free ? 0 : SHIPPING_COST, tot = s + ship;
-    const loyalty = (s * 0.01).toFixed(2).replace('.',',') + ' \u20AC';
+    const s = sub(), free = s >= SHIPPING_THRESHOLD, ship = free ? 0 : SHIPPING_COST;
+    const discount = loyaltyUsed ? Math.min(cagnotte, s + ship) : 0;
+    const tot = s + ship - discount;
+    const earnLoyalty = (s * 0.01).toFixed(2).replace('.',',') + ' \u20AC';
 
     document.getElementById('articleCount').textContent = tQty() + ' article' + (tQty()>1?'s':'');
     document.getElementById('subtotalPrice').textContent = fmt(s);
@@ -786,7 +843,31 @@ function refresh() {
     document.getElementById('totalPrice').textContent = fmt(tot);
     document.getElementById('mobileTotalPrice').textContent = fmt(tot);
     document.getElementById('cartBadge').textContent = tQty() + (selectedGift ? 1 : 0);
-    document.getElementById('mobileLoyaltyPts').textContent = loyalty;
+
+    // Loyalty
+    document.getElementById('loyaltyEarn').textContent = earnLoyalty;
+    if (cagnotte > 0) {
+        document.getElementById('loyaltyCagnotte').style.display = 'flex';
+        document.getElementById('loyaltyCagnotteAmount').textContent = fmt(cagnotte);
+        document.getElementById('mobileCagnotteHint').textContent = fmt(cagnotte);
+        document.getElementById('mobileLoyaltyHint').style.display = 'flex';
+    } else {
+        document.getElementById('loyaltyCagnotte').style.display = 'none';
+        document.getElementById('mobileLoyaltyHint').style.display = 'none';
+    }
+    // Loyalty used state
+    const appliedMsg = document.getElementById('loyaltyAppliedMsg');
+    const btnUse = document.getElementById('btnUseLoyalty');
+    if (loyaltyUsed) {
+        appliedMsg.classList.add('visible');
+        document.getElementById('loyaltyUsedAmount').textContent = fmt(discount);
+        btnUse.textContent = '✓ Applique';
+        btnUse.classList.add('used');
+    } else {
+        appliedMsg.classList.remove('visible');
+        btnUse.textContent = 'Utiliser';
+        btnUse.classList.remove('used');
+    }
 
     const pct = calcPct(s), grad = gradientFor(s), message = msgFor(s);
 
@@ -805,24 +886,38 @@ function refresh() {
     setM('mts-gift1', s >= GIFT_T1, 'mts-');
     setM('mts-gift2', s >= GIFT_T2, 'mts-');
     document.getElementById('mtsProgressMessage').innerHTML = message;
-    document.getElementById('mtsLoyalty').innerHTML = 'Fidelite : ' + loyalty;
+    document.getElementById('mtsLoyalty').innerHTML = 'Fidélité : ' + earnLoyalty;
 
     updateGift(s);
 }
 
 function setM(id, on) {
-    const marker = document.getElementById('marker-' + id) || document.getElementById(id.replace('mts-','mts-marker-'));
-    const label = document.getElementById('label-' + id) || document.getElementById(id.replace('mts-','mts-label-'));
-    // Fix: use direct IDs
     const m = document.getElementById('marker-'+id);
     const l = document.getElementById('label-'+id);
     if (m) m.classList.toggle('reached', on);
     if (l) l.classList.toggle('reached', on);
-    // Also handle mts- prefix
     const m2 = document.getElementById('mts-marker-'+id.replace('mts-',''));
     const l2 = document.getElementById('mts-label-'+id.replace('mts-',''));
     if (m2) m2.classList.toggle('reached', on);
     if (l2) l2.classList.toggle('reached', on);
+}
+
+function toggleUseLoyalty() {
+    loyaltyUsed = !loyaltyUsed;
+    refresh();
+}
+
+function handleMobileCheckout() {
+    if (cagnotte > 0 && !loyaltyUsed && !hasScrolledToLoyalty) {
+        hasScrolledToLoyalty = true;
+        const box = document.getElementById('loyaltyBox');
+        box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        box.classList.add('highlight');
+        setTimeout(() => box.classList.remove('highlight'), 2200);
+        return;
+    }
+    // Normal checkout flow
+    alert('Redirection vers le paiement...');
 }
 
 function updateGift(s) {
